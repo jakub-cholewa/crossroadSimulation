@@ -34,7 +34,7 @@ init() ->
   main_window_loop(Wx).
 
 make_window1(Server) ->
-  Frame = wxFrame:new(Server, -1, "CrossroadSimulation", [{size,{1000,500}}]),
+  Frame = wxFrame:new(Server, -1, "CrossroadSimulation", [{size,{1280,720}}]),
   Auto_Button = wxButton:new(Frame, 1, [{label, "Auto simulation"}, {pos, {300,70}}]),
   Manual_Button = wxButton:new(Frame, 2, [{label, "Manual simulation"}, {pos, {700,70}}]),
 
@@ -92,17 +92,20 @@ checkCarInput() ->
   end.
 
 make_window_for_manual_case(Server , Frame) ->
+%%make_window_for_manual_case(Server , Frame, PlNo) ->
   End_Button = wxButton:new(Frame, 3, [{label, "End simulation"}, {pos, {500,50}}]),
   wxButton:connect(End_Button, command_button_clicked),
-  Platform6 = [{6, wxStaticText:new(Frame, 0, "Peron 6", [{pos, {200, 350}}])}],
-  Platform5 = [{5, wxStaticText:new(Frame, 0, "Peron 5", [{pos, {200, 300}}])}|Platform6],
-  Platform4 = [{4, wxStaticText:new(Frame, 0, "Peron 4", [{pos, {200, 250}}])}|Platform5],
-  Platform3 = [{3, wxStaticText:new(Frame, 0, "Peron 3", [{pos, {200, 200}}])}|Platform4],
-  Platform2 = [{2, wxStaticText:new(Frame, 0, "Peron 2", [{pos, {200, 150}}])}|Platform3],
-  Platform1 = [{1, wxStaticText:new(Frame, 0, "Peron 1", [{pos, {200, 100}}])}|Platform2],
-  PlatformsView = Platform1,
+%%  Platform6 = [{6, wxStaticText:new(Frame, 0, "Peron 6", [{pos, {200, 350}}])}],
+%%  Platform5 = [{5, wxStaticText:new(Frame, 0, "Peron 5", [{pos, {200, 300}}])}|Platform6],
+%%  Platform4 = [{4, wxStaticText:new(Frame, 0, "Peron 4", [{pos, {200, 250}}])}|Platform5],
+%%  Platform3 = [{3, wxStaticText:new(Frame, 0, "Peron 3", [{pos, {200, 200}}])}|Platform4],
+%%  Platform2 = [{2, wxStaticText:new(Frame, 0, "Peron 2", [{pos, {200, 150}}])}|Platform3],
+%%  Platform1 = [{1, wxStaticText:new(Frame, 0, "Peron 1", [{pos, {200, 100}}])}|Platform2],
+%%  PlatformsView = Platform1,
 
-  RequestsView = wxStaticText:new(Frame, 0, "Oczekujące", [{pos, {500, 350}}]),
+  draw_crossroad(Frame),
+
+%%  RequestsView = wxStaticText:new(Frame, 0, "Oczekujące", [{pos, {500, 350}}]),
 
   wxFrame:show(Frame),
   {Server, Frame}.
@@ -129,3 +132,13 @@ getCarsFromList([]) ->
   [];
 getCarsFromList([{X, Y, Direcction}|Rest]) ->
   [string:concat("Actual position x = ", X, ", y = ", Y, ", direction: ", Direcction, "\n")| getCarsFromList(Rest)].
+
+
+draw_crossroad(Frame) ->
+  DrawContext = wxPaintDC:new(Frame),
+  wxDC:drawRectangle(DrawContext, {100, 100}, {400, 400}),
+  wxDC:drawLines(DrawContext, [{100, 250}, {250, 250}, {250,100}]),
+  wxDC:drawLines(DrawContext, [{350, 100}, {350, 250}, {500,250}]),
+  wxDC:drawLines(DrawContext, [{100, 350}, {250, 350}, {250,500}]),
+  wxDC:drawLines(DrawContext, [{350, 500}, {350, 350}, {500,350}]),
+  wxPaintDC:destroy(DrawContext).
