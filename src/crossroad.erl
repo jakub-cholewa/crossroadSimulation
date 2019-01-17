@@ -35,6 +35,7 @@ main_crossroad_loop({Cars}, GuiPid) ->
     {CarPid, X, Y, moved} ->
       UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
       io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
+      GuiPid ! {UpdatedCars, update},
       main_crossroad_loop({UpdatedCars}, GuiPid)
 
 %%    {CarPid, X, Y, getinfo} ->

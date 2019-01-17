@@ -119,6 +119,10 @@ loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
     {Cars, newCarAdded} ->
       io:format("Odebrałem nowy samochód~n"),
       draw_cars(Cars, Frame),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid);
+    {Cars, update} ->
+      draw_crossroad(Frame),
+      draw_cars(Cars, Frame),
       loop_for_manual_case(Wx, CrossroadPid, UserPid)
   end.
 
