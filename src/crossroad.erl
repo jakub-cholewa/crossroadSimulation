@@ -3,12 +3,12 @@
 -include("../include/wx.hrl").
 
 start(GuiPid) ->
-  register(?MODULE, Pid=spawn(?MODULE, init, [GuiPid])),%register nadaje nazwe procesowi
-  Pid.
+  register(?MODULE, CrossPid=spawn(?MODULE, init, [GuiPid])),%register nadaje nazwe procesowi
+  CrossPid.
 
 start_link(GuiPid) ->
-  register(?MODULE, Pid=spawn_link(?MODULE, init, [GuiPid])),
-  Pid.
+  register(?MODULE, CrossPid=spawn_link(?MODULE, init, [GuiPid])),
+  CrossPid.
 
 init(GuiPid) ->
   main_crossroad_loop({Cars = orddict:new()}, GuiPid).
@@ -19,16 +19,14 @@ main_crossroad_loop({Cars}, GuiPid) ->
 
   %Dodawanie samochodu
   % (źródło -> shell: funkcja add_car/2)
-    {Pid, MsgRef, {addCar, Position, Direction, X, Y}} ->
+    {CrossPid, MsgRef, {addCar, Position, Direction, X, Y}} ->
       %Utworzenie nowej instacji samochodu
-      CarPid = car:start_link(Position, Direction, X, Y),
+      CarPid = car:start_link(Position, Direction, X, Y, GuiPid),
       %Dodanie samochodu do listy samochodow którą posiada skrzyzowanie
-      NewCars = orddict:store(CarPid, {Position, Direction, X, Y}, Cars),
+      NewCars = orddict:store(CarPid, {Direction, X, Y}, Cars),
       io:format("Lista samochodow: ~p~n", [NewCars]),
       %Wysłanie odpowiedzi o sukcesie do procesu który wysłał wiadomość (funkcja add_car/2)
-      Pid ! {MsgRef, ok},
-      % wyslanie informacji do gui o nowym samochodzie
-      GuiPid ! {NewCars, ok},
+      CrossPid ! {MsgRef, ok},
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
       main_crossroad_loop({NewCars}, GuiPid)
 

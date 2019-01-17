@@ -93,13 +93,7 @@ make_window_for_manual_case(Server , Frame) ->
 %%make_window_for_manual_case(Server , Frame, PlNo) ->
   End_Button = wxButton:new(Frame, 3, [{label, "End simulation"}, {pos, {500,50}}]),
   wxButton:connect(End_Button, command_button_clicked),
-%%  Platform6 = [{6, wxStaticText:new(Frame, 0, "Peron 6", [{pos, {200, 350}}])}],
-%%  Platform5 = [{5, wxStaticText:new(Frame, 0, "Peron 5", [{pos, {200, 300}}])}|Platform6],
-%%  Platform4 = [{4, wxStaticText:new(Frame, 0, "Peron 4", [{pos, {200, 250}}])}|Platform5],
-%%  Platform3 = [{3, wxStaticText:new(Frame, 0, "Peron 3", [{pos, {200, 200}}])}|Platform4],
-%%  Platform2 = [{2, wxStaticText:new(Frame, 0, "Peron 2", [{pos, {200, 150}}])}|Platform3],
-%%  Platform1 = [{1, wxStaticText:new(Frame, 0, "Peron 1", [{pos, {200, 100}}])}|Platform2],
-%%  PlatformsView = Platform1,
+
 
   draw_crossroad(Frame),
 
