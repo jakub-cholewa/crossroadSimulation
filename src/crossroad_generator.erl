@@ -59,10 +59,10 @@ read_direction() ->
 
 get_coordinates(Position) ->
   if
-    Position =:= 1 -> {225, 100};
-    Position =:= 2 -> {500, 275};
-    Position =:= 3 -> {325, 500};
-    Position =:= 4 -> {100, 375}
+    Position =:= 1 -> {265, 100};
+    Position =:= 2 -> {490, 265};
+    Position =:= 3 -> {325, 490};
+    Position =:= 4 -> {100, 320}
   end.
 
 
