@@ -48,10 +48,13 @@ main_crossroad_loop({Cars}, GuiPid) ->
       io:format("X= ~p, Y= ~p~n", [X, Y]),
       if
         A =:= X -> if
-                     B =:= Y -> CarPid ! {self(), stop};
-                     true -> CarPid ! {self(), ok}
+                     B =:= Y -> CarPid ! {self(), stop},
+                       main_crossroad_loop({Cars}, GuiPid);
+                     true -> CarPid ! {self(), ok},
+                       main_crossroad_loop({Cars}, GuiPid)
                   end;
-        true -> CarPid ! {self(), ok}
+        true -> CarPid ! {self(), ok},
+          main_crossroad_loop({Cars}, GuiPid)
       end
 
 
