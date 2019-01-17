@@ -1,8 +1,6 @@
 -module(crossroad_generator).
 -compile(export_all).
 -include("../include/wx.hrl").
--include("../include/records.hrl").
-
 
 
 %% USER input
@@ -19,16 +17,17 @@ init_user() ->
 loop_user() ->
   Position = read_start_position(),
   Direction = read_direction(),
+  {X, Y} = get_coordinates(Position),
 
   receive
     {die} -> exit(simulationStopped)
   after 1 ->
-    make_car(Position, Direction),
+    make_car(Position, Direction, X, Y),
     loop_user()
   end.
 
-make_car(Position, Direction) ->
-  crossroad:add_car(Position, Direction).
+make_car(Position, Direction, X, Y) ->
+  crossroad:add_car(Position, Direction, X, Y).
 
 read_start_position() ->
   {Type, List} = io:fread("Car spawn position(N=1, E=2, S=3, W=4): ", "~d"),
@@ -58,6 +57,13 @@ read_direction() ->
     {ok, [Direction]} -> Direction
   end.
 
+get_coordinates(Position) ->
+  if
+    Position =:= 1 -> {225, 100};
+    Position =:= 2 -> {500, 275};
+    Position =:= 3 -> {325, 500};
+    Position =:= 4 -> {100, 375}
+  end.
 
 
 %%read_coordinate_X() ->

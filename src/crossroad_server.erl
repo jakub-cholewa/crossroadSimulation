@@ -1,8 +1,6 @@
 -module(crossroad_server).
 -compile(export_all).
 -include("../include/wx.hrl").
--include("../include/records.hrl").
-
 
 %idz kursorem do x,y
 print({gotoxy, X, Y}) ->
@@ -125,13 +123,6 @@ loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
       ok
   end.
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-getCarsFromList([]) ->
-  [];
-getCarsFromList([{X, Y, Direcction}|Rest]) ->
-  [string:concat("Actual position x = ", X, ", y = ", Y, ", direction: ", Direcction, "\n")| getCarsFromList(Rest)].
 
 
 draw_crossroad(Frame) ->

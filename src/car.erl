@@ -1,17 +1,15 @@
 -module(car).
 -compile(export_all).
 -include("../include/wx.hrl").
--include("../include/records.hrl").
-
 
 
 %Funkcje udostępniane na zewnątrz. Crossroad używa ich do stworzenia instancji samochodu
-start(Position, Direction) ->
-  spawn(?MODULE, init, [self(), Position, Direction]).
+start(Position, Direction, X, Y) ->
+  spawn(?MODULE, init, [self(), Position, Direction, X, Y]).
 
-start_link(Position, Direction) ->
-  spawn_link(?MODULE, init, [self(), Position, Direction]).
+start_link(Position, Direction, X, Y) ->
+  spawn_link(?MODULE, init, [self(), Position, Direction, X, Y]).
 
-init(Creator, Position, Direction) ->
+init(Creator, Position, Direction, X, Y) ->
   done.
 
