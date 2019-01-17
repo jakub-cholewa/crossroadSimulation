@@ -28,7 +28,7 @@ main_crossroad_loop({Cars}, GuiPid) ->
       %Wysłanie odpowiedzi o sukcesie do procesu który wysłał wiadomość (funkcja add_car/2)
       Pid ! {MsgRef, ok},
       % wyslanie informacji do gui o nowym samochodzie
-      GuiPid ! {NewCars, ok},
+      GuiPid ! {NewCars, newCarAdded},
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
       main_crossroad_loop({NewCars}, GuiPid)
 
