@@ -33,18 +33,27 @@ main_crossroad_loop({Cars}, GuiPid) ->
       main_crossroad_loop({NewCars}, GuiPid);
 
     {CarPid, X, Y, moved} ->
+      io:format("hehe~n"),
+
       UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
       io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
       GuiPid ! {UpdatedCars, update},
-      main_crossroad_loop({UpdatedCars}, GuiPid)
+      main_crossroad_loop({UpdatedCars}, GuiPid);
 
-%%    {CarPid, X, Y, getinfo} ->
-%%      FoundCar = orddict:find(CarPid, Cars),
-%%      [_, _, A, B] = FoundCar,
-%%      if
-%%        A /= X or B /= Y -> CarPid ! {self(), ok};
-%%        true -> {self(), stop}
-%%      end
+    {CarPid, X, Y, getinfo} ->
+      FoundCar = orddict:find(CarPid, Cars),
+      io:format("foundcar= ~p~n", [FoundCar]),
+      {ok, {Position, Direction, A, B}} = FoundCar,
+      io:format("A= ~p, B= ~p~n", [A, B]),
+      io:format("X= ~p, Y= ~p~n", [X, Y]),
+      if
+        A =:= X -> if
+                     B =:= Y -> CarPid ! {self(), stop};
+                     true -> CarPid ! {self(), ok}
+                  end;
+        true -> CarPid ! {self(), ok}
+      end
+
 
 end.
 
