@@ -32,6 +32,7 @@ main_crossroad_loop({Cars}, GuiPid) ->
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
       main_crossroad_loop({NewCars}, GuiPid);
 
+    % samochód się poruszył
     {CarPid, X, Y, moved} ->
       io:format("hehe~n"),
 
@@ -40,6 +41,7 @@ main_crossroad_loop({Cars}, GuiPid) ->
       GuiPid ! {UpdatedCars, update},
       main_crossroad_loop({UpdatedCars}, GuiPid);
 
+    % sprawdzanie czy samochód może się ruszyć
     {CarPid, X, Y, getinfo} ->
       FoundCar = orddict:find(CarPid, Cars),
       io:format("foundcar= ~p~n", [FoundCar]),
@@ -56,6 +58,10 @@ main_crossroad_loop({Cars}, GuiPid) ->
         true -> CarPid ! {self(), ok},
           main_crossroad_loop({Cars}, GuiPid)
       end
+
+    % zmiana koloru światła
+      {IsGreenOnMain, light_change} ->
+
 
 
 end.
