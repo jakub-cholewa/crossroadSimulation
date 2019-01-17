@@ -1,7 +1,7 @@
 -module(crossroad_server).
 -compile(export_all).
 -include("../include/wx.hrl").
-
+-include("../include/records.hrl").
 
 
 %idz kursorem do x,y
@@ -70,18 +70,28 @@ main_window_loop(Wx) ->
 
 %% USER view
 user(Server, Frame) ->
-%%  Car_input = checkCarInput(),
-%%  CrossroadPid = crossroad:start(self()),
-%%  Car = car_generator:generate_cars(Car_input),
-%%  Wx = make_window_for_manual_case(Server, Frame, Car_input),
-%%  UserPid = car_generator:start_link_user(),
-%%  loop3(Wx,CrossroadPid,UserPid).
+%%  CarsAmount = checkCarInput(),
+  CrossroadPid = crossroad:start(self()),
   Wx = make_window_for_manual_case(Server, Frame),
-  loop_for_manual_case(Wx).
+%%  Wx = make_window_for_manual_case(Server, Frame, CarsAmount),
+  UserPid = crossroad_generator:start_link_user(),
+  loop_for_manual_case(Wx, CrossroadPid, UserPid).
 
+checkCarInput() ->
+  {Type, List} = io:fread("Enter a number of cars you want to add (1-3): ", "~d"),
+  case {Type, List} of
+    {error,_} -> io:format("Enter a number~n"),
+      checkCarInput();
+    {ok, [Num]} when Num > 3 -> io:format("Enter a number less than 4~n"),
+      checkCarInput();
+    {ok, [Num]} when not is_integer(Num) -> io:format("Enter an integer~n"),
+      checkCarInput();
+    {ok, [Num]} when Num < 1 -> io:format("Enter a number more than 0~n"),
+      checkCarInput();
+    {ok, [Num]} -> Num
+  end.
 
 make_window_for_manual_case(Server , Frame) ->
-%%make_window_for_manual_case(Server , Frame, PlNo) ->
   End_Button = wxButton:new(Frame, 3, [{label, "End simulation"}, {pos, {500,50}}]),
   wxButton:connect(End_Button, command_button_clicked),
   Platform6 = [{6, wxStaticText:new(Frame, 0, "Peron 6", [{pos, {200, 350}}])}],
@@ -99,11 +109,23 @@ make_window_for_manual_case(Server , Frame) ->
 %%  {Server, Frame, End_Button, PlatformsView, RequestsView}.
 
 
-loop_for_manual_case(Wx) ->
-  {Server, Frame} = Wx,
+loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
+  {_, Frame} = Wx,
   receive
+
     #wx{event=#wxClose{}} ->
       io:format("--closing window ~p-- ~n",[self()]),
+      io:format("ZAMKNIETE"),
+      UserPid ! {die},
+      CrossroadPid ! {die},
       wxWindow:destroy(Frame),
       ok
   end.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+getCarsFromList([]) ->
+  [];
+getCarsFromList([{X, Y, Direcction}|Rest]) ->
+  [string:concat("Actual position x = ", X, ", y = ", Y, ", direction: ", Direcction, "\n")| getCarsFromList(Rest)].
