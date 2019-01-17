@@ -15,11 +15,12 @@ init(Creator, Position, Direction, X, Y, GuiPid, CrossPid) ->
 
 car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
-  io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
+%%  io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
 
   timer:sleep(300),
 
   GuiPid ! {self(), X, Y, moved},
+
   CrossPid ! {self(), X, Y, moved},
 
 

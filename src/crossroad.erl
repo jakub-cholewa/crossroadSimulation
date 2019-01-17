@@ -21,7 +21,7 @@ main_crossroad_loop({Cars}, GuiPid) ->
   % (źródło -> shell: funkcja add_car/2)
     {CrossPid, MsgRef, {addCar, Position, Direction, X, Y}} ->
       %Utworzenie nowej instacji samochodu
-      CarPid = car:start_link(Position, Direction, X, Y, GuiPid, CrossPid),
+      CarPid = car:start_link(Position, Direction, X, Y, GuiPid, self()),
       %Dodanie samochodu do listy samochodow którą posiada skrzyzowanie
       NewCars = orddict:store(CarPid, {Position, Direction, X, Y}, Cars),
       io:format("Lista samochodow: ~p~n", [NewCars]),
@@ -34,16 +34,16 @@ main_crossroad_loop({Cars}, GuiPid) ->
 
     {CarPid, X, Y, moved} ->
       UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
+      io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
       main_crossroad_loop({UpdatedCars}, GuiPid)
 
 %%    {CarPid, X, Y, getinfo} ->
-%%      FoundCar = orddict:update(CarPid,
-%%        fun
-%%          ({Position, Direction, X, Y}) -> {Position, Direction, A, B}
-%%        end,
-%%        Cars)
-
-
+%%      FoundCar = orddict:find(CarPid, Cars),
+%%      [_, _, A, B] = FoundCar,
+%%      if
+%%        A /= X or B /= Y -> CarPid ! {self(), ok};
+%%        true -> {self(), stop}
+%%      end
 
 end.
 
