@@ -23,10 +23,12 @@ main_crossroad_loop({Cars}, GuiPid) ->
       %Utworzenie nowej instacji samochodu
       CarPid = car:start_link(Position, Direction, X, Y, GuiPid),
       %Dodanie samochodu do listy samochodow którą posiada skrzyzowanie
-      NewCars = orddict:store(CarPid, {Direction, X, Y}, Cars),
+      NewCars = orddict:store(CarPid, {Position, Direction, X, Y}, Cars),
       io:format("Lista samochodow: ~p~n", [NewCars]),
       %Wysłanie odpowiedzi o sukcesie do procesu który wysłał wiadomość (funkcja add_car/2)
       CrossPid ! {MsgRef, ok},
+      % wyslanie informacji do gui o nowym samochodzie
+      GuiPid ! {NewCars, newCarAdded},
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
       main_crossroad_loop({NewCars}, GuiPid)
 

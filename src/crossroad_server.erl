@@ -114,7 +114,12 @@ loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
       UserPid ! {die},
       CrossroadPid ! {die},
       wxWindow:destroy(Frame),
-      ok
+      ok;
+
+    {Cars, newCarAdded} ->
+      io:format("Odebrałem nowy samochód"),
+      draw_cars(Cars, Frame),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid)
   end.
 
 
@@ -127,3 +132,23 @@ draw_crossroad(Frame) ->
   wxDC:drawLines(DrawContext, [{100, 350}, {250, 350}, {250,500}]),
   wxDC:drawLines(DrawContext, [{350, 500}, {350, 350}, {500,350}]),
   wxPaintDC:destroy(DrawContext).
+
+
+
+draw_cars([{Pid, {Spawn, Direction, X, Y}} | Rest], Frame) ->
+  io:format("Wyświetlam : X= ~p Y= ~p ~n", [X, Y]),
+  DrawContext = wxPaintDC:new(Frame),
+  wxDC:drawRectangle(DrawContext, {X, Y}, {10,10}),
+  draw_cars(Rest, Frame);
+
+draw_cars([], Frame) ->
+  ok.
+
+%%  DrawContext = wxPaintDC:new(Frame),
+%%  wxDC:drawRectangle(DrawContext, {X, Y}, {10, 10}),
+%%  draw_cars(Tail, Frame);
+%%
+%%draw_cars([] , Frame) ->
+%%  ok.
+
+
