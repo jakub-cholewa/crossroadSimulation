@@ -6,12 +6,12 @@
 
 
 %Funkcje udostępniane na zewnątrz. Crossroad używa ich do stworzenia instancji samochodu
-start(X, Y, Direction) ->
-  spawn(?MODULE, init, [self(), X, Y, Direction]).
+start(Position, Direction) ->
+  spawn(?MODULE, init, [self(), Position, Direction]).
 
-start_link(X, Y, Direction) ->
-  spawn_link(?MODULE, init, [self(), X, Y, Direction]).
+start_link(Position, Direction) ->
+  spawn_link(?MODULE, init, [self(), Position, Direction]).
 
-init(Creator, X, Y, Direction) ->
+init(Creator, Position, Direction) ->
   done.
 
