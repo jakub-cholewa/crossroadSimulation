@@ -4,16 +4,16 @@
 
 
 %Funkcje udostępniane na zewnątrz. Crossroad używa ich do stworzenia instancji samochodu
-start(Position, Direction, X, Y, GuiPid) ->
-  spawn(?MODULE, init, [self(), Position, Direction, X, Y, GuiPid]).
+start(Position, Direction, X, Y, GuiPid, CrossPid) ->
+  spawn(?MODULE, init, [self(), Position, Direction, X, Y, GuiPid, CrossPid]).
 
-start_link(Position, Direction, X, Y, GuiPid) ->
-  spawn_link(?MODULE, init, [self(), Position, Direction, X, Y, GuiPid]).
+start_link(Position, Direction, X, Y, GuiPid, CrossPid) ->
+  spawn_link(?MODULE, init, [self(), Position, Direction, X, Y, GuiPid, CrossPid]).
 
-init(Creator, Position, Direction, X, Y, GuiPid) ->
-  car_lifecycle_loop(Position, Direction, X, Y, GuiPid).
+init(Creator, Position, Direction, X, Y, GuiPid, CrossPid) ->
+  car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid).
 
-car_lifecycle_loop(Position, Direction, X, Y, GuiPid) ->
+car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
   io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
 
@@ -21,11 +21,22 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid) ->
 
   GuiPid ! {self(), X, Y, moved},
 
+
   if
-    Direction =:= 1 -> car_lifecycle_loop(Position, Direction, X, Y+1, GuiPid);
-    Direction =:= 2 -> car_lifecycle_loop(Position, Direction, X+1, Y, GuiPid);
-    Direction =:= 3 -> car_lifecycle_loop(Position, Direction, X, Y-1, GuiPid);
-    Direction =:= 3 -> car_lifecycle_loop(Position, Direction, X-1, Y, GuiPid)
+    Direction =:= 1 -> move_car_n(Position, Direction, X, Y, GuiPid, CrossPid);
+    Direction =:= 2 -> car_lifecycle_loop(Position, Direction, X+5, Y, GuiPid, CrossPid);
+    Direction =:= 3 -> car_lifecycle_loop(Position, Direction, X, Y-5, GuiPid, CrossPid);
+    Direction =:= 3 -> car_lifecycle_loop(Position, Direction, X-5, Y, GuiPid, CrossPid)
   end.
+
+
+move_car_n(Position, Direction, X, Y, GuiPid, CrossPid) ->
+  CrossPid ! {self(), X, Y+5, getinfo},
+  receive
+    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X, Y+5, GuiPid, CrossPid)
+  after 30 ->
+    car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+  end.
+
 
 

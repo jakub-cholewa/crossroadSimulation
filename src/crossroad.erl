@@ -21,7 +21,7 @@ main_crossroad_loop({Cars}, GuiPid) ->
   % (źródło -> shell: funkcja add_car/2)
     {CrossPid, MsgRef, {addCar, Position, Direction, X, Y}} ->
       %Utworzenie nowej instacji samochodu
-      CarPid = car:start_link(Position, Direction, X, Y, GuiPid),
+      CarPid = car:start_link(Position, Direction, X, Y, GuiPid, CrossPid),
       %Dodanie samochodu do listy samochodow którą posiada skrzyzowanie
       NewCars = orddict:store(CarPid, {Position, Direction, X, Y}, Cars),
       io:format("Lista samochodow: ~p~n", [NewCars]),
@@ -30,9 +30,19 @@ main_crossroad_loop({Cars}, GuiPid) ->
       % wyslanie informacji do gui o nowym samochodzie
       GuiPid ! {NewCars, newCarAdded},
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
-      main_crossroad_loop({NewCars}, GuiPid)
+      main_crossroad_loop({NewCars}, GuiPid);
 
-  end.
+    {CarPid, X, Y, getinfo} ->
+      if
+        check_if_move_is_possible(X, Y, Cars) =:= true ->
+          CarPid ! {self(), ok};
+        true -> CarPid ! {self(), wait}
+      end
+
+
+
+
+end.
 
 add_car(Position, Direction, X, Y) ->
   Ref = make_ref(),
@@ -44,3 +54,5 @@ add_car(Position, Direction, X, Y) ->
   after 5000 ->
     {error, timeout}
   end.
+
+check_if_move_is_possible(X, Y, Cars) ->
