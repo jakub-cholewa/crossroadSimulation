@@ -34,9 +34,8 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 move_car_n(Position, Direction, X, Y, GuiPid, CrossPid) ->
   CrossPid ! {self(), X, Y+5, getinfo},
   receive
-    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X, Y+5, GuiPid, CrossPid)
-  after 30 ->
-    car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X, Y+5, GuiPid, CrossPid);
+    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
   end.
 
 
