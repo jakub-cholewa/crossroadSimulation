@@ -1,0 +1,3 @@
+-module(car).
+-compile(export_all).
+-include("../include/wx.hrl").
