@@ -32,14 +32,10 @@ main_crossroad_loop({Cars}, GuiPid) ->
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
       main_crossroad_loop({NewCars}, GuiPid);
 
-    {CarPid, X, Y, getinfo} ->
-      if
-        check_if_move_is_possible(X, Y, Cars) =:= true ->
-          CarPid ! {self(), ok};
-        true -> CarPid ! {self(), wait}
-      end
-
-
+    {CarPid, X, Y, moved} ->
+      CarPid ! {self(), ok},
+      UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
+      main_crossroad_loop({UpdatedCars}, GuiPid)
 
 
 end.
@@ -55,4 +51,3 @@ add_car(Position, Direction, X, Y) ->
     {error, timeout}
   end.
 
-check_if_move_is_possible(X, Y, Cars) ->
