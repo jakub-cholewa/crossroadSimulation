@@ -20,7 +20,7 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
   timer:sleep(100),
 
   GuiPid ! {self(), X, Y, moved},
-  CrossPid ! {self(), X, Y, Position, Direction, moved},
+  CrossPid ! {self(), X, Y, moved},
 
 
   if
