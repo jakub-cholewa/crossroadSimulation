@@ -25,9 +25,9 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
   if
     Direction =:= 1 -> move_car_n(Position, Direction, X, Y, GuiPid, CrossPid);
-    Direction =:= 2 -> car_lifecycle_loop(Position, Direction, X+5, Y, GuiPid, CrossPid);
-    Direction =:= 3 -> car_lifecycle_loop(Position, Direction, X, Y-5, GuiPid, CrossPid);
-    Direction =:= 3 -> car_lifecycle_loop(Position, Direction, X-5, Y, GuiPid, CrossPid)
+    Direction =:= 2 -> move_car_e(Position, Direction, X, Y, GuiPid, CrossPid);
+    Direction =:= 3 -> move_car_s(Position, Direction, X, Y, GuiPid, CrossPid);
+    Direction =:= 3 -> move_car_w(Position, Direction, X, Y, GuiPid, CrossPid)
   end.
 
 
@@ -38,5 +38,25 @@ move_car_n(Position, Direction, X, Y, GuiPid, CrossPid) ->
     {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
   end.
 
+move_car_e(Position, Direction, X, Y, GuiPid, CrossPid) ->
+  CrossPid ! {self(), X+5, Y, getinfo},
+  receive
+    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X+5, Y, GuiPid, CrossPid);
+    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+  end.
+
+move_car_s(Position, Direction, X, Y, GuiPid, CrossPid) ->
+  CrossPid ! {self(), X, Y-5, getinfo},
+  receive
+    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X, Y-5, GuiPid, CrossPid);
+    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+  end.
+
+move_car_w(Position, Direction, X, Y, GuiPid, CrossPid) ->
+  CrossPid ! {self(), X-5, Y, getinfo},
+  receive
+    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X-5, Y, GuiPid, CrossPid);
+    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+  end.
 
 
