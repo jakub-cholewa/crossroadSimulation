@@ -44,7 +44,7 @@ add_car(X, Y) ->
   ?MODULE ! {self(), Ref, {addCar, X, Y}},
   receive
     {Ref, Msg} -> Msg,
-      io:format("Dodano pociag ~p ~p~n", [X, Y])
+      io:format("Dodano pojazd na współrzędnych: [~p ~p] ~n", [X, Y])
   after 5000 ->
     {error, timeout}
   end.
