@@ -23,8 +23,7 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
   CrossPid ! {self(), X, Y, moved},
 
-
-  check_for_border(X, Y, Direction),
+  check_for_border(X, Y, Direction, CrossPid),
 
 
   if
@@ -76,5 +75,19 @@ check_light(Position, Direction, X, Y, GuiPid, CrossPid) ->
   end.
 
 % północ
-check_for_border(_, 105, 1) -> exit(out_of_map);
-check_for_border(_,_,_) -> ok.
+check_for_border(_, 100, 1, CrossPid) ->
+  CrossPid ! {self(), dead},
+  timer:sleep(5000);
+% wschód
+check_for_border(490, _, 2, CrossPid) ->
+  CrossPid ! {self(), dead},
+  timer:sleep(5000);
+% południe
+check_for_border(_, 490, 3, CrossPid) ->
+  CrossPid ! {self(), dead},
+  timer:sleep(5000);
+% zachód
+check_for_border(100,_, 4, CrossPid) ->
+  CrossPid ! {self(), dead},
+  timer:sleep(5000);
+check_for_border(_,_,_,_) -> ok.
