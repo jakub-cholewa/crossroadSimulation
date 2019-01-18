@@ -66,28 +66,46 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
 %%                    B < Y+11 ->
 %%                      CarPid ! {self(), stop},
 %%                      io:format("buak buu"),
-%%                      main_crossroad_loop({Cars}, GuiPid, LightPid);
+%%                      main_crossroad_loop({Cars}, GuiPid);
 %%                    true -> CarPid ! {self(), ok},
 %%                      io:format("buak1"),
-%%                      main_crossroad_loop({Cars}, GuiPid, LightPid)
+%%                      main_crossroad_loop({Cars}, GuiPid)
 %%                  end;
 %%                true -> CarPid ! {self(), ok},
 %%                  io:format("buak2"),
-%%                  main_crossroad_loop({Cars}, GuiPid, LightPid)
+%%                  main_crossroad_loop({Cars}, GuiPid)
 %%              end;
 %%            true -> CarPid ! {self(), ok},
 %%              io:format("buak3"),
-%%              main_crossroad_loop({Cars}, GuiPid, LightPid)
+%%              main_crossroad_loop({Cars}, GuiPid)
 %%          end;
 %%        true -> CarPid ! {self(), ok},
 %%          io:format("buak4"),
-%%          main_crossroad_loop({Cars}, GuiPid, LightPid)
-%%      end
+%%          main_crossroad_loop({Cars}, GuiPid)
+%%      end;
 
     % zmiana koloru światła
-      {NIsGreenOnMain, light_change} ->
-        GuiPid ! {NIsGreenOnMain, light_change},
-        main_crossroad_loop({Cars}, GuiPid, NIsGreenOnMain)
+    {NIsGreenOnMain, light_change} ->
+      GuiPid ! {NIsGreenOnMain, light_change},
+      main_crossroad_loop({Cars}, GuiPid, NIsGreenOnMain);
+
+    {CarPid, X, Y, getLight} ->
+      if
+        IsGreenOnMain =:= 1 ->
+          if
+            [X, Y] =:= [265, 250] -> CarPid ! {self(), green};
+            [X, Y] =:= [340, 265] -> CarPid ! {self(), red};
+            [X, Y] =:= [325, 340] -> CarPid ! {self(), green};
+            [X, Y] =:= [250, 320] -> CarPid ! {self(), red}
+          end;
+        true ->
+          if
+            [X, Y] =:= [265, 250] -> CarPid ! {self(), red};
+            [X, Y] =:= [340, 265] -> CarPid ! {self(), green};
+            [X, Y] =:= [325, 340] -> CarPid ! {self(), red};
+            [X, Y] =:= [250, 320] -> CarPid ! {self(), green}
+          end
+      end
 
 end.
 
