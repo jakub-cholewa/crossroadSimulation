@@ -22,7 +22,7 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
   % (źródło -> shell: funkcja add_car/2)
     {CrossPid, MsgRef, {addCar, Position, Direction, X, Y}} ->
       %Utworzenie nowej instacji samochodu
-      CarPid = car:start_link(Position, Direction, X, Y, GuiPid, self()),
+      CarPid = car:start(Position, Direction, X, Y, GuiPid, self()),
       %Dodanie samochodu do listy samochodow którą posiada skrzyzowanie
       NewCars = orddict:store(CarPid, {Position, Direction, X, Y}, Cars),
       io:format("Lista samochodow: ~p~n", [NewCars]),
@@ -37,6 +37,7 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
     {CarPid, dead} ->
       UpdatedCars = orddict:erase(CarPid,Cars),
       GuiPid ! {UpdatedCars, update},
+      exit(CarPid, out_of_border),
       main_crossroad_loop({UpdatedCars}, GuiPid, IsGreenOnMain);
 
     % samochód się poruszył
