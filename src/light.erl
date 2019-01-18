@@ -6,21 +6,12 @@ start(CrossPid) ->
   spawn(?MODULE, init, [CrossPid]).
 
 start_link(CrossPid) ->
-  spawn_link(?MODULE, init, [self(), CrossPid]).
+  spawn_link(?MODULE, init, [CrossPid]).
 
 init(CrossPid) ->
   light_lifecycle_loop(1, CrossPid).
 
 light_lifecycle_loop(IsGreenOnMain, CrossPid) ->
-
-
-
-  receive
-    {die} -> exit(kill);
-
-    {CarPid, X, Y, getLight} -> {self(), green}
-
-  end,
-
-
+  timer:sleep(2000),
+  CrossPid ! {IsGreenOnMain*(-1), light_change},
   light_lifecycle_loop(IsGreenOnMain*(-1), CrossPid).

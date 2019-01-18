@@ -11,10 +11,10 @@ start_link(GuiPid) ->
   CrossPid.
 
 init(GuiPid) ->
-  LightPid = light:start(self()),
-  main_crossroad_loop({Cars = orddict:new()}, GuiPid, LightPid).
+  LightPid = light:start_link(self()),
+  main_crossroad_loop({Cars = orddict:new()}, GuiPid, 1).
 
-main_crossroad_loop({Cars}, GuiPid, LightPid) ->
+main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
   receive
     {die} -> exit(kill);
 
@@ -22,7 +22,7 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
   % (źródło -> shell: funkcja add_car/2)
     {CrossPid, MsgRef, {addCar, Position, Direction, X, Y}} ->
       %Utworzenie nowej instacji samochodu
-      CarPid = car:start_link(Position, Direction, X, Y, GuiPid, self(), LightPid),
+      CarPid = car:start_link(Position, Direction, X, Y, GuiPid, self()),
       %Dodanie samochodu do listy samochodow którą posiada skrzyzowanie
       NewCars = orddict:store(CarPid, {Position, Direction, X, Y}, Cars),
       io:format("Lista samochodow: ~p~n", [NewCars]),
@@ -31,13 +31,13 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
       % wyslanie informacji do gui o nowym samochodzie
       GuiPid ! {NewCars, newCarAdded},
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
-      main_crossroad_loop({NewCars}, GuiPid, LightPid);
+      main_crossroad_loop({NewCars}, GuiPid, IsGreenOnMain);
 
     % samochód się poruszył
     {CarPid, X, Y, moved} ->
       UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
       GuiPid ! {UpdatedCars, update},
-      main_crossroad_loop({UpdatedCars}, GuiPid, LightPid);
+      main_crossroad_loop({UpdatedCars}, GuiPid, IsGreenOnMain);
 
     % sprawdzanie czy samochód może się ruszyć
     {CarPid, X, Y, getinfo} ->
@@ -45,10 +45,10 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
       {ok, {Position, Direction, A, B}} = FoundCar,
       if
         [A, B] =:= [X, Y] -> CarPid ! {self(), stop},
-          main_crossroad_loop({Cars}, GuiPid, LightPid);
+          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
         true -> CarPid ! {self(), ok},
-          main_crossroad_loop({Cars}, GuiPid, LightPid)
-      end
+          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
+      end;
 %%      if
 %%        X-1 < A ->
 %%          if
@@ -77,9 +77,10 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
 %%          main_crossroad_loop({Cars}, GuiPid, LightPid)
 %%      end
 
-%%    % zmiana koloru światła
-%%      {IsGreenOnMain, light_change} ->
-
+    % zmiana koloru światła
+      {NIsGreenOnMain, light_change} ->
+        GuiPid ! {NIsGreenOnMain, light_change},
+        main_crossroad_loop({Cars}, GuiPid, NIsGreenOnMain)
 
 end.
 
