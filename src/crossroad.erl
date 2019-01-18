@@ -33,6 +33,12 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
       main_crossroad_loop({NewCars}, GuiPid, IsGreenOnMain);
 
+    % samochód wyjechał poza obszar
+    {CarPid, dead} ->
+      UpdatedCars = orddict:erase(CarPid,Cars),
+      GuiPid ! {UpdatedCars, update},
+      main_crossroad_loop({UpdatedCars}, GuiPid, IsGreenOnMain);
+
     % samochód się poruszył
     {CarPid, X, Y, moved} ->
       UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
