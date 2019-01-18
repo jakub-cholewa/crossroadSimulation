@@ -43,44 +43,62 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
     {CarPid, X, Y, getinfo} ->
       FoundCar = orddict:find(CarPid, Cars),
       {ok, {Position, Direction, A, B}} = FoundCar,
-      if
-        [A, B] =:= [X, Y] -> CarPid ! {self(), stop},
-          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
-        true -> CarPid ! {self(), ok},
-          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
-      end;
 %%      if
-%%        X-1 < A ->
-%%          if
-%%            A < X+11 ->
-%%              if
-%%                Y-1 < B ->
-%%                  if
-%%                    B < Y+11 ->
-%%                      CarPid ! {self(), stop},
-%%                      io:format("buak buu"),
-%%                      main_crossroad_loop({Cars}, GuiPid, LightPid);
-%%                    true -> CarPid ! {self(), ok},
-%%                      io:format("buak1"),
-%%                      main_crossroad_loop({Cars}, GuiPid, LightPid)
-%%                  end;
-%%                true -> CarPid ! {self(), ok},
-%%                  io:format("buak2"),
-%%                  main_crossroad_loop({Cars}, GuiPid, LightPid)
-%%              end;
-%%            true -> CarPid ! {self(), ok},
-%%              io:format("buak3"),
-%%              main_crossroad_loop({Cars}, GuiPid, LightPid)
-%%          end;
+%%        [A, B] =:= [X, Y] -> CarPid ! {self(), stop},
+%%          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
 %%        true -> CarPid ! {self(), ok},
-%%          io:format("buak4"),
-%%          main_crossroad_loop({Cars}, GuiPid, LightPid)
-%%      end
+%%          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
+%%      end;
+      if
+        X-1 < A ->
+          if
+            A < X+11 ->
+              if
+                Y-1 < B ->
+                  if
+                    B < Y+11 ->
+                      CarPid ! {self(), stop},
+                      io:format("buak buu"),
+                      main_crossroad_loop({Cars}, GuiPid);
+                    true -> CarPid ! {self(), ok},
+                      io:format("buak1"),
+                      main_crossroad_loop({Cars}, GuiPid)
+                  end;
+                true -> CarPid ! {self(), ok},
+                  io:format("buak2"),
+                  main_crossroad_loop({Cars}, GuiPid)
+              end;
+            true -> CarPid ! {self(), ok},
+              io:format("buak3"),
+              main_crossroad_loop({Cars}, GuiPid)
+          end;
+        true -> CarPid ! {self(), ok},
+          io:format("buak4"),
+          main_crossroad_loop({Cars}, GuiPid)
+      end;
 
     % zmiana koloru światła
-      {NIsGreenOnMain, light_change} ->
-        GuiPid ! {NIsGreenOnMain, light_change},
-        main_crossroad_loop({Cars}, GuiPid, NIsGreenOnMain)
+    {NIsGreenOnMain, light_change} ->
+      GuiPid ! {NIsGreenOnMain, light_change},
+      main_crossroad_loop({Cars}, GuiPid, NIsGreenOnMain);
+
+    {CarPid, X, Y, getLight} ->
+      if
+        IsGreenOnMain =:= 1 ->
+          if
+            [X, Y] =:= [265, 250] -> CarPid ! {self(), green};
+            [X, Y] =:= [340, 265] -> CarPid ! {self(), red};
+            [X, Y] =:= [325, 340] -> CarPid ! {self(), green};
+            [X, Y] =:= [250, 320] -> CarPid ! {self(), red}
+          end;
+        true ->
+          if
+            [X, Y] =:= [265, 250] -> CarPid ! {self(), red};
+            [X, Y] =:= [340, 265] -> CarPid ! {self(), green};
+            [X, Y] =:= [325, 340] -> CarPid ! {self(), red};
+            [X, Y] =:= [250, 320] -> CarPid ! {self(), green}
+          end
+      end
 
 end.
 
