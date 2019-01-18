@@ -65,7 +65,6 @@ main_window_loop(Wx) ->
   end.
 
 
-
 %% USER view
 user(Server, Frame) ->
 %%  CarsAmount = checkCarInput(),
@@ -94,10 +93,7 @@ make_window_for_manual_case(Server , Frame) ->
   End_Button = wxButton:new(Frame, 3, [{label, "End simulation"}, {pos, {500,50}}]),
   wxButton:connect(End_Button, command_button_clicked),
 
-
   draw_crossroad(Frame),
-
-%%  RequestsView = wxStaticText:new(Frame, 0, "Oczekujące", [{pos, {500, 350}}]),
 
   wxFrame:show(Frame),
   {Server, Frame}.
