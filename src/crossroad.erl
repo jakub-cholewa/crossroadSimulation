@@ -41,6 +41,24 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
 
     % sprawdzanie czy samochód może się ruszyć
     {CarPid, X, Y, getinfo} ->
+
+%%      orddict:map(
+%%        fun(Pid, {Position, Direction, A, B}) ->
+%%          io:format([Pid]),
+%%          io:format([CarPid]),
+%%          if
+%%            Pid /= CarPid ->
+%%              io:format("buka2~n"),
+%%              if
+%%                [A, B] =:= [X, Y] -> CarPid ! {self(), stop},
+%%                  main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
+%%                true -> CarPid ! {self(), ok},
+%%                  main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
+%%              end
+%%          end
+%%        end, Cars);
+
+
       FoundCar = orddict:find(CarPid, Cars),
       {ok, {Position, Direction, A, B}} = FoundCar,
       if
@@ -49,6 +67,8 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
         true -> CarPid ! {self(), ok},
           main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
       end;
+
+
 %%      if
 %%        X-1 < A ->
 %%          if

@@ -19,13 +19,7 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
 %%  io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
 
-  if
-    [X, Y] =:= [265, 250] -> check_light(Position, Direction, X, Y, GuiPid, CrossPid);
-    [X, Y] =:= [340, 265] -> check_light(Position, Direction, X, Y, GuiPid, CrossPid);
-    [X, Y] =:= [325, 340] -> check_light(Position, Direction, X, Y, GuiPid, CrossPid);
-    [X, Y] =:= [250, 320] -> check_light(Position, Direction, X, Y, GuiPid, CrossPid);
-    true -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
-  end,
+
 
   CrossPid ! {self(), X, Y, moved},
 
