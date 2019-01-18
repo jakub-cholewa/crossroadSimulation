@@ -120,12 +120,16 @@ loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
       io:format("Odebrałem nowy samochód~n"),
       draw_cars(Cars, Frame),
       loop_for_manual_case(Wx, CrossroadPid, UserPid);
+
     {Cars, update} ->
       draw_crossroad(Frame),
       draw_cars(Cars, Frame),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid);
+
+    {IsGreenOnMain, light_change} ->
+      draw_lights(IsGreenOnMain, Frame),
       loop_for_manual_case(Wx, CrossroadPid, UserPid)
   end.
-
 
 
 draw_crossroad(Frame) ->
@@ -147,6 +151,17 @@ draw_cars([{Pid, {Spawn, Direction, X, Y}} | Rest], Frame) ->
 
 draw_cars([], Frame) ->
   ok.
+
+draw_lights(IsGreenOnMain, Frame) ->
+  io:format("Zmieniam światlo"),
+  DrawContext = wxPaintDC:new(Frame),
+  wxDC:floodFill(DrawContext, {600,600}, wxRED, wxFLOOD_SURFACE).
+%%  if
+%%    IsGreenOnMain =:= 1 ->
+%%      ;
+%%    true ->
+%%  end
+
 
 %%  DrawContext = wxPaintDC:new(Frame),
 %%  wxDC:drawRectangle(DrawContext, {X, Y}, {10, 10}),
