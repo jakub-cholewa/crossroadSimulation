@@ -35,33 +35,50 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
 
     % samochód się poruszył
     {CarPid, X, Y, moved} ->
-      io:format("hehe~n"),
-
       UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
-      io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
       GuiPid ! {UpdatedCars, update},
       main_crossroad_loop({UpdatedCars}, GuiPid, LightPid);
 
     % sprawdzanie czy samochód może się ruszyć
     {CarPid, X, Y, getinfo} ->
       FoundCar = orddict:find(CarPid, Cars),
-      io:format("foundcar= ~p~n", [FoundCar]),
       {ok, {Position, Direction, A, B}} = FoundCar,
-      io:format("A= ~p, B= ~p~n", [A, B]),
-      io:format("X= ~p, Y= ~p~n", [X, Y]),
       if
-        A =:= X -> if
-                     B =:= Y -> CarPid ! {self(), stop},
-                       main_crossroad_loop({Cars}, GuiPid, LightPid);
-                     true -> CarPid ! {self(), ok},
-                       main_crossroad_loop({Cars}, GuiPid, LightPid)
-                  end;
+        [A, B] =:= [X, Y] -> CarPid ! {self(), stop},
+          main_crossroad_loop({Cars}, GuiPid, LightPid);
         true -> CarPid ! {self(), ok},
           main_crossroad_loop({Cars}, GuiPid, LightPid)
       end
+%%      if
+%%        X-1 < A ->
+%%          if
+%%            A < X+11 ->
+%%              if
+%%                Y-1 < B ->
+%%                  if
+%%                    B < Y+11 ->
+%%                      CarPid ! {self(), stop},
+%%                      io:format("buak buu"),
+%%                      main_crossroad_loop({Cars}, GuiPid, LightPid);
+%%                    true -> CarPid ! {self(), ok},
+%%                      io:format("buak1"),
+%%                      main_crossroad_loop({Cars}, GuiPid, LightPid)
+%%                  end;
+%%                true -> CarPid ! {self(), ok},
+%%                  io:format("buak2"),
+%%                  main_crossroad_loop({Cars}, GuiPid, LightPid)
+%%              end;
+%%            true -> CarPid ! {self(), ok},
+%%              io:format("buak3"),
+%%              main_crossroad_loop({Cars}, GuiPid, LightPid)
+%%          end;
+%%        true -> CarPid ! {self(), ok},
+%%          io:format("buak4"),
+%%          main_crossroad_loop({Cars}, GuiPid, LightPid)
+%%      end
 
-    % zmiana koloru światła
-      {IsGreenOnMain, light_change} ->
+%%    % zmiana koloru światła
+%%      {IsGreenOnMain, light_change} ->
 
 
 end.

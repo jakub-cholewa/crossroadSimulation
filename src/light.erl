@@ -12,7 +12,15 @@ init(CrossPid) ->
   light_lifecycle_loop(1, CrossPid).
 
 light_lifecycle_loop(IsGreenOnMain, CrossPid) ->
-  sleep(5000),
 
-  CrossPid ! {IsGreenOnMain*(-1), light_change},
+
+
+  receive
+    {die} -> exit(kill);
+
+    {CarPid, X, Y, getLight} -> {self(), green}
+
+  end,
+
+
   light_lifecycle_loop(IsGreenOnMain*(-1), CrossPid).
