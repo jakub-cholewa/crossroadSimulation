@@ -12,9 +12,9 @@ start_link(GuiPid) ->
 
 init(GuiPid) ->
   LightPid = light:start_link(self()),
-  main_crossroad_loop({Cars = orddict:new()}, GuiPid, LightPid).
+  main_crossroad_loop({Cars = orddict:new()}, GuiPid, 1).
 
-main_crossroad_loop({Cars}, GuiPid, LightPid) ->
+main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
   receive
     {die} -> exit(kill);
 
@@ -31,7 +31,7 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
       % wyslanie informacji do gui o nowym samochodzie
       GuiPid ! {NewCars, newCarAdded},
       %Ponowne wywołanie pętli głównej programu stacji z nową listą(orddict) pociągów
-      main_crossroad_loop({NewCars}, GuiPid, LightPid);
+      main_crossroad_loop({NewCars}, GuiPid, IsGreenOnMain);
 
     % samochód się poruszył
     {CarPid, X, Y, moved} ->
@@ -40,7 +40,7 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
       UpdatedCars = orddict:update(CarPid, fun ({Position, Direction, _, _}) -> {Position, Direction, X, Y} end, Cars),
       io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
       GuiPid ! {UpdatedCars, update},
-      main_crossroad_loop({UpdatedCars}, GuiPid, LightPid);
+      main_crossroad_loop({UpdatedCars}, GuiPid, IsGreenOnMain);
 
     % sprawdzanie czy samochód może się ruszyć
     {CarPid, X, Y, getinfo} ->
@@ -52,18 +52,18 @@ main_crossroad_loop({Cars}, GuiPid, LightPid) ->
       if
         A =:= X -> if
                      B =:= Y -> CarPid ! {self(), stop},
-                       main_crossroad_loop({Cars}, GuiPid, LightPid);
+                       main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
                      true -> CarPid ! {self(), ok},
-                       main_crossroad_loop({Cars}, GuiPid, LightPid)
+                       main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
                   end;
         true -> CarPid ! {self(), ok},
-          main_crossroad_loop({Cars}, GuiPid, LightPid)
+          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
       end;
 
     % zmiana koloru światła
-      {IsGreenOnMain, light_change} ->
-        GuiPid ! {IsGreenOnMain, light_change},
-        main_crossroad_loop({Cars}, GuiPid, LightPid)
+      {NIsGreenOnMain, light_change} ->
+        GuiPid ! {NIsGreenOnMain, light_change},
+        main_crossroad_loop({Cars}, GuiPid, NIsGreenOnMain)
 
 end.
 
