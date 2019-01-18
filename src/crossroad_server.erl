@@ -94,18 +94,22 @@ make_window_for_manual_case(Server , Frame) ->
   End_Button = wxButton:new(Frame, 3, [{label, "End simulation"}, {pos, {500,50}}]),
   wxButton:connect(End_Button, command_button_clicked),
 
+  MainLight = wxStaticText:new(Frame, 0, "Główne światło:", [{pos, {550, 100}}]),
+  SubLight = wxStaticText:new(Frame, 0, "Poboczne światło: ", [{pos, {550, 150}}]),
+
+
 
   draw_crossroad(Frame),
 
 %%  RequestsView = wxStaticText:new(Frame, 0, "Oczekujące", [{pos, {500, 350}}]),
 
   wxFrame:show(Frame),
-  {Server, Frame}.
+  {Server, Frame, MainLight, SubLight}.
 %%  {Server, Frame, End_Button, PlatformsView, RequestsView}.
 
 
 loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
-  {_, Frame} = Wx,
+  {_, Frame, MainLight, SubLight} = Wx,
   receive
 
     #wx{event=#wxClose{}} ->
@@ -127,7 +131,7 @@ loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
       loop_for_manual_case(Wx, CrossroadPid, UserPid);
 
     {IsGreenOnMain, light_change} ->
-      draw_lights(IsGreenOnMain, Frame),
+      draw_lights(IsGreenOnMain, Frame, MainLight, SubLight),
       loop_for_manual_case(Wx, CrossroadPid, UserPid)
   end.
 
@@ -152,10 +156,17 @@ draw_cars([{Pid, {Spawn, Direction, X, Y}} | Rest], Frame) ->
 draw_cars([], Frame) ->
   ok.
 
-draw_lights(IsGreenOnMain, Frame) ->
-  io:format("Zmieniam światlo"),
-  DrawContext = wxPaintDC:new(Frame),
-  wxDC:floodFill(DrawContext, {600,600}, wxRED, wxFLOOD_SURFACE).
+draw_lights(IsGreenOnMain, Frame, MainLight, SubLight) ->
+  io:format("Zmieniam światlo~n"),
+  if
+    IsGreenOnMain =:= 1 ->
+      wxStaticText:setLabel(MainLight,"Główne światło   : ZIELONE"),
+      wxStaticText:setLabel(SubLight, "Poboczne światło : CZERWONE");
+    true ->
+      wxStaticText:setLabel(MainLight,"Główne światło   : CZERWONE"),
+      wxStaticText:setLabel(SubLight, "Poboczne światło : ZIELONE")
+  end.
+
 %%  if
 %%    IsGreenOnMain =:= 1 ->
 %%      ;

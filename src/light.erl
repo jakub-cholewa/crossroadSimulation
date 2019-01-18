@@ -6,7 +6,7 @@ start(CrossPid) ->
   spawn(?MODULE, init, [CrossPid]).
 
 start_link(CrossPid) ->
-  spawn_link(?MODULE, init, [self(), CrossPid]).
+  spawn_link(?MODULE, init, [CrossPid]).
 
 init(CrossPid) ->
   light_lifecycle_loop(1, CrossPid).
