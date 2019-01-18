@@ -19,6 +19,8 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
   CrossPid ! {self(), X, Y, moved},
 
+  check_for_border(X, Y, Direction),
+
 %%  io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
 
 %%  if
@@ -83,3 +85,7 @@ check_light(Position, Direction, X, Y, GuiPid, CrossPid) ->
     {LightPid, green} -> ok;
     {LightPid, red} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
   end.
+
+% północ
+check_for_border(_, 105, 1) -> exit(out_of_map);
+check_for_border(_,_,_) -> ok.
