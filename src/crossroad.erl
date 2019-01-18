@@ -113,17 +113,17 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
       if
         IsGreenOnMain =:= 1 ->
           if
-            [X, Y] =:= [265, 250] -> CarPid ! {self(), green};
-            [X, Y] =:= [340, 265] -> CarPid ! {self(), red};
-            [X, Y] =:= [325, 340] -> CarPid ! {self(), green};
-            [X, Y] =:= [250, 320] -> CarPid ! {self(), red}
+            [X, Y] =:= [265, 250] -> CarPid ! {self(), green, n};
+            [X, Y] =:= [340, 265] -> CarPid ! {self(), red, e};
+            [X, Y] =:= [325, 340] -> CarPid ! {self(), green}, s;
+            [X, Y] =:= [250, 320] -> CarPid ! {self(), red, w}
           end;
         true ->
           if
-            [X, Y] =:= [265, 250] -> CarPid ! {self(), red};
-            [X, Y] =:= [340, 265] -> CarPid ! {self(), green};
-            [X, Y] =:= [325, 340] -> CarPid ! {self(), red};
-            [X, Y] =:= [250, 320] -> CarPid ! {self(), green}
+            [X, Y] =:= [265, 250] -> CarPid ! {self(), red, n};
+            [X, Y] =:= [340, 265] -> CarPid ! {self(), green, e};
+            [X, Y] =:= [325, 340] -> CarPid ! {self(), red, s};
+            [X, Y] =:= [250, 320] -> CarPid ! {self(), green, w}
           end
       end
 

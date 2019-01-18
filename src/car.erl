@@ -70,7 +70,10 @@ move_car_w(Position, Direction, X, Y, GuiPid, CrossPid) ->
 check_light(Position, Direction, X, Y, GuiPid, CrossPid) ->
   CrossPid ! {self(), X, Y, getLight},
   receive
-    {CrossPid, green} -> ok;
+    {CrossPid, green, n} -> car_lifecycle_loop(Position, Direction, X, Y-1, GuiPid, CrossPid);
+    {CrossPid, green, e} -> car_lifecycle_loop(Position, Direction, X+1, Y, GuiPid, CrossPid);
+    {CrossPid, green, s} -> car_lifecycle_loop(Position, Direction, X, Y+1, GuiPid, CrossPid);
+    {CrossPid, green, w} -> car_lifecycle_loop(Position, Direction, X-1, Y, GuiPid, CrossPid);
     {CrossPid, red} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
   end.
 
