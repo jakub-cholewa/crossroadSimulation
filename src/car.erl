@@ -25,6 +25,9 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
   check_for_border(X, Y, Direction, CrossPid),
 
+  check_lights(Position, Direction, X, Y, GuiPid, CrossPid),
+
+
 
   if
 %%    Direction =:= 1 -> car_lifecycle_loop(Position, Direction, X, Y-5, GuiPid, CrossPid);
@@ -37,6 +40,40 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
     Direction =:= 4 -> move_car_w(Position, Direction, X, Y, GuiPid, CrossPid)
   end.
 
+
+%%move_car_n(Position, Direction, X, Y, GuiPid, CrossPid) ->
+%%  CrossPid ! {self(), X, Y-1, getinfo},
+%%  receive
+%%    {CrossPid, Cars} ->
+%%      Last = lists:last(Cars)
+%%  end.
+%%
+%%move_car_e(Position, Direction, X, Y, GuiPid, CrossPid) ->
+%%  CrossPid ! {self(), X+1, Y, getinfo},
+%%  receive
+%%    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X+1, Y, GuiPid, CrossPid);
+%%    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+%%  end.
+%%
+%%move_car_s(Position, Direction, X, Y, GuiPid, CrossPid) ->
+%%  CrossPid ! {self(), X, Y+1, getinfo},
+%%  receive
+%%    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X, Y+1, GuiPid, CrossPid);
+%%    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+%%  end.
+%%
+%%move_car_w(Position, Direction, X, Y, GuiPid, CrossPid) ->
+%%  CrossPid ! {self(), X-1, Y, getinfo},
+%%  receive
+%%    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X-1, Y, GuiPid, CrossPid);
+%%    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
+%%  end.
+%%
+%%firstmatch(YourList, Number) ->
+%%  case lists:dropwhile(fun(X) -> X =< Number end, YourList) of
+%%    [] -> no_solution;
+%%    [X | _] -> X
+%%  end.
 
 move_car_n(Position, Direction, X, Y, GuiPid, CrossPid) ->
   CrossPid ! {self(), X, Y-1, getinfo},
@@ -66,6 +103,16 @@ move_car_w(Position, Direction, X, Y, GuiPid, CrossPid) ->
     {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
   end.
 
+
+check_lights(Position, Direction, 265, 250, GuiPid, CrossPid) ->
+  check_light(Position, Direction, 265, 250, GuiPid, CrossPid);
+check_lights(Position, Direction, 340, 265, GuiPid, CrossPid) ->
+  check_light(Position, Direction, 340, 265, GuiPid, CrossPid);
+check_lights(Position, Direction, 325, 340, GuiPid, CrossPid) ->
+  check_light(Position, Direction, 325, 340, GuiPid, CrossPid);
+check_lights(Position, Direction, 250, 320, GuiPid, CrossPid) ->
+  check_light(Position, Direction, 250, 320, GuiPid, CrossPid);
+check_lights(_,_,_,_,_,_) -> ok.
 
 check_light(Position, Direction, X, Y, GuiPid, CrossPid) ->
   CrossPid ! {self(), X, Y, getLight},

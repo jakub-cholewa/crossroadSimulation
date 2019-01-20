@@ -49,10 +49,133 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
     % sprawdzanie czy samochód może się ruszyć
     {CarPid, X, Y, getinfo} ->
 
+%%      CarsWithoutActualCar = orddict:erase(CarPid, Cars),
+%%
+%%      CarsWithoutActualCarList = orddict:to_list(CarsWithoutActualCar),
+%%
+%%      CarPid ! {self(), CarsWithoutActualCarList};
+%%
+
+      FoundCar = orddict:find(CarPid, Cars),
+      {ok, {Position, Direction, A, B}} = FoundCar,
+      if
+        [A, B] =:= [X, Y] -> CarPid ! {self(), stop},
+          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
+        true -> CarPid ! {self(), ok},
+          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
+      end;
+
+
+%%      orddict:find()
+
 %%      orddict:map(
 %%        fun(Pid, {Position, Direction, A, B}) ->
-%%          io:format([Pid]),
-%%          io:format([CarPid]),
+%%          io:format("~nPids = ~p~n", [Pid]),
+%%          io:format("CarPid = ~p~n~n", [CarPid]),
+%%          if
+%%            Pid /= CarPid ->
+%%              if
+%%                X-1 < A ->
+%%                  if
+%%                    A < X+11 ->
+%%                      if
+%%                        Y-1 < B ->
+%%                          if
+%%                            B < Y+11 -> Boolean = false;
+%%                            true -> {ok}
+%%                          end;
+%%                        true -> {ok}
+%%                      end;
+%%                    true -> {ok}
+%%                  end;
+%%                true -> {ok}
+%%              end;
+%%            true -> {ok}
+%%          end
+%%        end, Cars),
+%%
+%%      if
+%%       Boolean =:= false -> CarPid ! {self(), stop};
+%%        true -> CarPid ! {self(), ok}
+%%      end,
+%%
+%%      main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
+%%
+
+
+
+
+
+
+
+
+
+%%      Boolean = true,
+%%
+%%      orddict:map(
+%%        fun(Pid, {Position, Direction, A, B}) ->
+%%          io:format("~nPids = ~p~n", [Pid]),
+%%          io:format("CarPid = ~p~n~n", [CarPid]),
+%%          if
+%%            Pid /= CarPid ->
+%%              if
+%%                X-1 < A ->
+%%                  if
+%%                    A < X+11 ->
+%%                      if
+%%                        Y-1 < B ->
+%%                          if
+%%                            B < Y+11 -> Boolean = false;
+%%                            true -> {ok}
+%%                          end;
+%%                        true -> {ok}
+%%                      end;
+%%                    true -> {ok}
+%%                  end;
+%%                true -> {ok}
+%%              end;
+%%            true -> {ok}
+%%          end
+%%        end, Cars),
+%%
+%%      if
+%%        Boolean =:= false -> CarPid ! {self(), stop};
+%%        true -> CarPid ! {self(), ok}
+%%      end,
+%%
+%%      main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
+
+
+
+
+
+
+%%      Boolean = true,
+%%
+%%      orddict:map(
+%%        fun(Pid, {Position, Direction, A, B}) ->
+%%          io:format("~nPids = ~p~n", [Pid]),
+%%          io:format("CarPid = ~p~n~n", [CarPid]),
+%%          if
+%%            Pid /= CarPid ->
+%%              io:format("buka2~n"),
+%%              if
+%%                [A, B] =:= [X, Y] -> Boolean = false;
+%%                true -> {ok}
+%%              end;
+%%            true -> {ok}
+%%          end
+%%        end, Cars),
+%%
+%%      if
+%%        Boolean =:= false -> CarPid ! {self(), stop};
+%%        true -> CarPid ! {self(), ok}
+%%      end,
+%%
+%%      main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
+
+
+
 %%          if
 %%            Pid /= CarPid ->
 %%              io:format("buka2~n"),
@@ -66,14 +189,7 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
 %%        end, Cars);
 
 
-      FoundCar = orddict:find(CarPid, Cars),
-      {ok, {Position, Direction, A, B}} = FoundCar,
-      if
-        [A, B] =:= [X, Y] -> CarPid ! {self(), stop},
-          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
-        true -> CarPid ! {self(), ok},
-          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
-      end;
+
 
 
 %%      if
@@ -110,24 +226,19 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
       main_crossroad_loop({Cars}, GuiPid, NIsGreenOnMain);
 
     {CarPid, X, Y, getLight} ->
-      if
-        IsGreenOnMain =:= 1 ->
-          if
-            [X, Y] =:= [265, 250] -> CarPid ! {self(), green, n};
-            [X, Y] =:= [340, 265] -> CarPid ! {self(), red, e};
-            [X, Y] =:= [325, 340] -> CarPid ! {self(), green}, s;
-            [X, Y] =:= [250, 320] -> CarPid ! {self(), red, w}
-          end;
-        true ->
-          if
-            [X, Y] =:= [265, 250] -> CarPid ! {self(), red, n};
-            [X, Y] =:= [340, 265] -> CarPid ! {self(), green, e};
-            [X, Y] =:= [325, 340] -> CarPid ! {self(), red, s};
-            [X, Y] =:= [250, 320] -> CarPid ! {self(), green, w}
-          end
-      end
+      ligts_color(CarPid, X, Y, IsGreenOnMain),
+      main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain)
+  end.
 
-end.
+ligts_color(CarPid, 265, 250, 1) -> io:format("zielone n"), CarPid ! {self(), green, n};
+ligts_color(CarPid, 340, 265, 1) -> io:format("czerwone e"),CarPid ! {self(), red, e};
+ligts_color(CarPid, 325, 340, 1) -> io:format("zielone s"),CarPid ! {self(), green, s};
+ligts_color(CarPid, 250, 320, 1) -> io:format("czerwone w"),CarPid ! {self(), red, w};
+ligts_color(CarPid, 265, 250, 0) -> io:format("czerwone n"),CarPid ! {self(), red, n};
+ligts_color(CarPid, 340, 265, 0) -> io:format("zielone e"),CarPid ! {self(), green, e};
+ligts_color(CarPid, 325, 340, 0) -> io:format("czerwone s"),CarPid ! {self(), red, s};
+ligts_color(CarPid, 250, 320, 0) -> io:format("zielone w"),CarPid ! {self(), green, w};
+ligts_color(_, _ , _ , _) -> io:format("nic"),ok.
 
 add_car(Position, Direction, X, Y) ->
   Ref = make_ref(),
@@ -140,3 +251,20 @@ add_car(Position, Direction, X, Y) ->
     {error, timeout}
   end.
 
+%%find_bad_element() ->
+%%  if
+%%    X-1 < A ->
+%%      if
+%%        A < X+11 ->
+%%          if
+%%            Y-1 < B ->
+%%              if
+%%                B < Y+11 -> AnyCarAheadTrue = ordset:add_element(false, AnyCarAhead);
+%%                true -> {ok}
+%%              end;
+%%            true -> {ok}
+%%          end;
+%%        true -> {ok}
+%%      end;
+%%    true -> {ok}
+%%  end.
