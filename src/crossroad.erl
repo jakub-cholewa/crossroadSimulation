@@ -234,10 +234,10 @@ ligts_color(CarPid, 265, 250, 1) -> io:format("zielone n"), CarPid ! {self(), gr
 ligts_color(CarPid, 340, 265, 1) -> io:format("czerwone e"),CarPid ! {self(), red, e};
 ligts_color(CarPid, 325, 340, 1) -> io:format("zielone s"),CarPid ! {self(), green, s};
 ligts_color(CarPid, 250, 320, 1) -> io:format("czerwone w"),CarPid ! {self(), red, w};
-ligts_color(CarPid, 265, 250, 0) -> io:format("czerwone n"),CarPid ! {self(), red, n};
-ligts_color(CarPid, 340, 265, 0) -> io:format("zielone e"),CarPid ! {self(), green, e};
-ligts_color(CarPid, 325, 340, 0) -> io:format("czerwone s"),CarPid ! {self(), red, s};
-ligts_color(CarPid, 250, 320, 0) -> io:format("zielone w"),CarPid ! {self(), green, w};
+ligts_color(CarPid, 265, 250, -1) -> io:format("czerwone n"),CarPid ! {self(), red, n};
+ligts_color(CarPid, 340, 265, -1) -> io:format("zielone e"),CarPid ! {self(), green, e};
+ligts_color(CarPid, 325, 340, -1) -> io:format("czerwone s"),CarPid ! {self(), red, s};
+ligts_color(CarPid, 250, 320, -1) -> io:format("zielone w"),CarPid ! {self(), green, w};
 ligts_color(_, _ , _ , _) -> io:format("nic"),ok.
 
 add_car(Position, Direction, X, Y) ->

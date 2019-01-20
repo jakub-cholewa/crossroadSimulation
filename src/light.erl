@@ -12,6 +12,6 @@ init(CrossPid) ->
   light_lifecycle_loop(1, CrossPid).
 
 light_lifecycle_loop(IsGreenOnMain, CrossPid) ->
-  timer:sleep(3000),
+  timer:sleep(2000),
   CrossPid ! {IsGreenOnMain*(-1), light_change},
   light_lifecycle_loop(IsGreenOnMain*(-1), CrossPid).
