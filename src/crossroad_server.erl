@@ -94,7 +94,7 @@ make_window_for_manual_case(Server , Frame) ->
 
 
 set_buttons(Frame) ->
-  End_Button = wxButton:new(Frame, 3, [{label, "Koniec"}, {pos, {550,550}}]),
+  End_Button = wxButton:new(Frame, 3, [{label, "Koniec"}, {pos, {550,500}}]),
   N_Button = wxButton:new(Frame, 4, [{label, "N"}, {pos, {600,100}}, {size, {50,50}}]),
   E_Button = wxButton:new(Frame, 5, [{label, "E"}, {pos, {650,150}}, {size, {50,50}}]),
   S_Button = wxButton:new(Frame, 6, [{label, "S"}, {pos, {600,200}}, {size, {50,50}}]),
