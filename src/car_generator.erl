@@ -16,7 +16,7 @@ car_lifecycle_loop(CrossPid) ->
   Position = crypto:rand_uniform(1,4),
   {X, Y, Direction} = generate_coords(Position),
   crossroad:add_car(Position, Direction, X, Y),
-  timer:sleep(5000),
+  timer:sleep(2500),
   car_lifecycle_loop(CrossPid).
 
 

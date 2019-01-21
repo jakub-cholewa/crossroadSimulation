@@ -140,12 +140,12 @@ check_collision(CarPid, CarPidsKeys, UpdatedCars, X, Y, Position, 2, Cars, GuiPi
                 true ->
                   DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
                   DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 2, Position, Cars, GuiPid, IsGreenOnMain)
+                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 2, Cars, GuiPid, IsGreenOnMain)
               end;
             true ->
               DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
               DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 2, Position, Cars, GuiPid, IsGreenOnMain)
+              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 2, Cars, GuiPid, IsGreenOnMain)
           end;
         true ->
           DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
@@ -206,12 +206,12 @@ check_collision(CarPid, CarPidsKeys, UpdatedCars, X, Y, Position, 4, Cars, GuiPi
                 true ->
                   DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
                   DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 4, Position, Cars, GuiPid, IsGreenOnMain)
+                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 4, Cars, GuiPid, IsGreenOnMain)
               end;
             true ->
               DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
               DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 4, Position, Cars, GuiPid, IsGreenOnMain)
+              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 4, Cars, GuiPid, IsGreenOnMain)
           end;
         true ->
           DeletedLastCar = orddict:erase(LastPid, UpdatedCars),

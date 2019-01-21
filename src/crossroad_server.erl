@@ -19,14 +19,6 @@ printxy({X,Y,Msg}) ->
 
 %% MAIN view
 init() ->
-%%  print({clear}),
-%%  print({printxy, 10, 3, '---------------------'}),
-%%  print({printxy, 10, 4, '|CrossroadSimulation|'}),
-%%  print({printxy, 10, 5, '---------------------'}),
-%%  print({printxy, 6, 8, "crossroad_server:auto(): TRYB AUTOMATYCZNY"}),
-%%  print({printxy, 6, 10, "crossroad_server:user(): TRYB UZYTKOWNIKA"}),
-%%  print({gotoxy, 10, 13}),
-%%  io:format("\n",[]),
   Server = wx:new(),
   Wx = make_window1(Server),
   main_window_loop(Wx).
@@ -89,12 +81,6 @@ checkCarInput() ->
   end.
 
 make_window_for_manual_case(Server , Frame) ->
-%%make_window_for_manual_case(Server , Frame, PlNo) ->
-%%  DrawContext = wxPaintDC:new(Frame),
-%%  wxDC:setTextBackground(DrawContext, {200,0,0}),
-%%  wxDC:setTextForeground(DrawContext, {200,0,0}),
-%%  wxStaticText:new(Frame, 0, "Symulacja Skrzyżowania", [{pos, {800, 50}}]),
-%%  wxDC:drawLabel(DrawContext, "O", {375,375,100,100}),
   End_Button = wxButton:new(Frame, 3, [{label, "Koniec"}, {pos, {550,550}}]),
   N_Button = wxButton:new(Frame, 4, [{label, "N"}, {pos, {600,100}}, {size, {50,50}}]),
   E_Button = wxButton:new(Frame, 5, [{label, "E"}, {pos, {650,150}}, {size, {50,50}}]),
@@ -109,7 +95,6 @@ make_window_for_manual_case(Server , Frame) ->
   wxStaticText:new(Frame, 0, "Symulacja Skrzyżowania", [{pos, {600, 30}}]),
   MainLight = wxStaticText:new(Frame, 0, "Główne światło:", [{pos, {550, 400}}]),
   SubLight = wxStaticText:new(Frame, 0, "Poboczne światło: ", [{pos, {550, 450}}]),
-
 
 
   draw_crossroad(Frame),
