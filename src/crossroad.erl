@@ -64,15 +64,15 @@ main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
   end.
 
 
-ligts_color(CarPid, 265, 250, 1) -> io:format("zielone n~n"), CarPid ! {self(), green, n};
-ligts_color(CarPid, 340, 265, 1) -> io:format("czerwone e~n"),CarPid ! {self(), red, e};
-ligts_color(CarPid, 325, 340, 1) -> io:format("zielone s~n"),CarPid ! {self(), green, s};
-ligts_color(CarPid, 250, 320, 1) -> io:format("czerwone w~n"),CarPid ! {self(), red, w};
-ligts_color(CarPid, 265, 250, -1) -> io:format("czerwone n~n"),CarPid ! {self(), red, n};
-ligts_color(CarPid, 340, 265, -1) -> io:format("zielone e~n"),CarPid ! {self(), green, e};
-ligts_color(CarPid, 325, 340, -1) -> io:format("czerwone s~n"),CarPid ! {self(), red, s};
-ligts_color(CarPid, 250, 320, -1) -> io:format("zielone w~n"),CarPid ! {self(), green, w};
-ligts_color(_, _ , _ , _) -> io:format("nic"),ok.
+ligts_color(CarPid, 265, 250, 1) -> CarPid ! {self(), green, n};
+ligts_color(CarPid, 340, 265, 1) -> CarPid ! {self(), red, e};
+ligts_color(CarPid, 325, 340, 1) -> CarPid ! {self(), green, s};
+ligts_color(CarPid, 250, 320, 1) -> CarPid ! {self(), red, w};
+ligts_color(CarPid, 265, 250, -1) -> CarPid ! {self(), red, n};
+ligts_color(CarPid, 340, 265, -1) -> CarPid ! {self(), green, e};
+ligts_color(CarPid, 325, 340, -1) -> CarPid ! {self(), red, s};
+ligts_color(CarPid, 250, 320, -1) -> CarPid ! {self(), green, w};
+ligts_color(_, _ , _ , _) -> ok.
 
 
 add_car(Position, Direction, X, Y) ->
