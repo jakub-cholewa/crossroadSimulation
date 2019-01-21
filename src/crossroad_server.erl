@@ -16,7 +16,6 @@ printxy({X,Y,Msg}) ->
   io:format("\e[~p;~pH~p~n",[Y,X,Msg]).
 
 
-
 %% MAIN view
 init() ->
   Server = wx:new(),
@@ -66,19 +65,19 @@ user(Server, Frame) ->
   UserPid = crossroad_generator:start_link_user(),
   loop_for_manual_case(Wx, CrossroadPid, UserPid).
 
-checkCarInput() ->
-  {Type, List} = io:fread("Enter a number of cars you want to add (1-3): ", "~d"),
-  case {Type, List} of
-    {error,_} -> io:format("Enter a number~n"),
-      checkCarInput();
-    {ok, [Num]} when Num > 3 -> io:format("Enter a number less than 4~n"),
-      checkCarInput();
-    {ok, [Num]} when not is_integer(Num) -> io:format("Enter an integer~n"),
-      checkCarInput();
-    {ok, [Num]} when Num < 1 -> io:format("Enter a number more than 0~n"),
-      checkCarInput();
-    {ok, [Num]} -> Num
-  end.
+%%checkCarInput() ->
+%%  {Type, List} = io:fread("Enter a number of cars you want to add (1-3): ", "~d"),
+%%  case {Type, List} of
+%%    {error,_} -> io:format("Enter a number~n"),
+%%      checkCarInput();
+%%    {ok, [Num]} when Num > 3 -> io:format("Enter a number less than 4~n"),
+%%      checkCarInput();
+%%    {ok, [Num]} when not is_integer(Num) -> io:format("Enter an integer~n"),
+%%      checkCarInput();
+%%    {ok, [Num]} when Num < 1 -> io:format("Enter a number more than 0~n"),
+%%      checkCarInput();
+%%    {ok, [Num]} -> Num
+%%  end.
 
 make_window_for_manual_case(Server , Frame) ->
   End_Button = wxButton:new(Frame, 3, [{label, "Koniec"}, {pos, {550,550}}]),
