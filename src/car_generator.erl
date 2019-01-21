@@ -20,7 +20,6 @@ car_lifecycle_loop(CrossPid) ->
   car_lifecycle_loop(CrossPid).
 
 
-
 % -> {X, Y, Direction}
 generate_coords(1) -> {265, 100, 3};
 generate_coords(2) -> {490, 265, 4};

@@ -80,6 +80,20 @@ user(Server, Frame) ->
 %%  end.
 
 make_window_for_manual_case(Server , Frame) ->
+  set_buttons(Frame),
+
+  wxStaticText:new(Frame, 0, "Symulacja Skrzyżowania", [{pos, {600, 30}}]),
+  MainLight = wxStaticText:new(Frame, 0, "Główne światło:", [{pos, {550, 400}}]),
+  SubLight = wxStaticText:new(Frame, 0, "Poboczne światło: ", [{pos, {550, 450}}]),
+
+  draw_crossroad(Frame),
+
+  wxFrame:show(Frame),
+  {Server, Frame, MainLight, SubLight}.
+%%  {Server, Frame, End_Button, PlatformsView, RequestsView}.
+
+
+set_buttons(Frame) ->
   End_Button = wxButton:new(Frame, 3, [{label, "Koniec"}, {pos, {550,550}}]),
   N_Button = wxButton:new(Frame, 4, [{label, "N"}, {pos, {600,100}}, {size, {50,50}}]),
   E_Button = wxButton:new(Frame, 5, [{label, "E"}, {pos, {650,150}}, {size, {50,50}}]),
@@ -89,18 +103,7 @@ make_window_for_manual_case(Server , Frame) ->
   wxButton:connect(N_Button, command_button_clicked),
   wxButton:connect(E_Button, command_button_clicked),
   wxButton:connect(S_Button, command_button_clicked),
-  wxButton:connect(W_Button, command_button_clicked),
-
-  wxStaticText:new(Frame, 0, "Symulacja Skrzyżowania", [{pos, {600, 30}}]),
-  MainLight = wxStaticText:new(Frame, 0, "Główne światło:", [{pos, {550, 400}}]),
-  SubLight = wxStaticText:new(Frame, 0, "Poboczne światło: ", [{pos, {550, 450}}]),
-
-
-  draw_crossroad(Frame),
-
-  wxFrame:show(Frame),
-  {Server, Frame, MainLight, SubLight}.
-%%  {Server, Frame, End_Button, PlatformsView, RequestsView}.
+  wxButton:connect(W_Button, command_button_clicked).
 
 
 loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
@@ -139,15 +142,26 @@ loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
 
     {Cars, newCarAdded} ->
       io:format("Odebrałem nowy samochód~n"),
+%%      DrawContext = wxPaintDC:new(Frame),
+%%      wxDC:clear(DrawContext),
+%%      set_buttons(Frame),
       draw_cars(Cars, Frame),
       loop_for_manual_case(Wx, CrossroadPid, UserPid);
 
     {Cars, update} ->
+%%      DrawContext = wxPaintDC:new(Frame),
+%%      wxDC:clear(DrawContext),
+%%      set_buttons(Frame),
       draw_crossroad(Frame),
       draw_cars(Cars, Frame),
       loop_for_manual_case(Wx, CrossroadPid, UserPid);
 
-    {IsGreenOnMain, light_change} ->
+    {IsGreenOnMain, light_change_to_yellow} ->
+      draw_lights_yellow(IsGreenOnMain, Frame, MainLight, SubLight),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid);
+
+
+    {IsGreenOnMain, light_change_to_red_green} ->
       draw_lights(IsGreenOnMain, Frame, MainLight, SubLight),
       loop_for_manual_case(Wx, CrossroadPid, UserPid)
   end.
@@ -200,5 +214,16 @@ draw_lights(IsGreenOnMain, Frame, MainLight, SubLight) ->
       wxStaticText:setLabel(SubLight, "Poboczne światło : ZIELONE")
   end.
 
+draw_lights_yellow(IsGreenOnMain, Frame, MainLight, SubLight) ->
+  io:format("Zmieniam światlo~n"),
+  DrawContext = wxPaintDC:new(Frame),
+  wxDC:setTextForeground(DrawContext, {255,255,0}),
+  wxDC:drawLabel(DrawContext, "O", {50,290,100,100}),
+  wxDC:drawLabel(DrawContext, "O", {540,290,100,100}),
+  wxDC:setTextForeground(DrawContext, {255,255,0}),
+  wxDC:drawLabel(DrawContext, "O", {290,50,100,100}),
+  wxDC:drawLabel(DrawContext, "O", {290,530,100,100}),
 
+  wxStaticText:setLabel(MainLight,"Główne światło   : ŻÓŁTE"),
+  wxStaticText:setLabel(SubLight, "Poboczne światło : ŻÓłTE").
 
