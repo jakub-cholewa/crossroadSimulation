@@ -12,6 +12,7 @@ start_link(GuiPid) ->
 
 init(GuiPid) ->
   LightPid = light:start_link(self()),
+  CarGeneratorPid = car_generator:start_link(self()),
   main_crossroad_loop({Cars = orddict:new()}, GuiPid, 1).
 
 main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain) ->
