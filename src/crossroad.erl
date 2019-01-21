@@ -94,29 +94,15 @@ check_collision(CarPid, CarPidsKeys, UpdatedCars, X, Y, Position, 1, Cars, GuiPi
     true ->
       LastPid = lists:last(CarPidsKeys),
       FoundCar = orddict:find(LastPid, UpdatedCars),
-      {ok, {PositionC, _, A, B}} = FoundCar,
+      {ok, {PositionC, _, _, B}} = FoundCar,
       if
         PositionC =:= Position ->
           if
-            X-11 < A ->
+            Y-11 < B ->
               if
-                A < X+1 ->
-                  if
-                    Y-11 < B ->
-                      if
-                        B < Y+1 ->
-                          CarPid ! {self(), stop},
-                          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
-                        true ->
-                          DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                          DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                          check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 1, Cars, GuiPid, IsGreenOnMain)
-                      end;
-                    true ->
-                      DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                      DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                      check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 1, Cars, GuiPid, IsGreenOnMain)
-                  end;
+                B < Y+1 ->
+                  CarPid ! {self(), stop},
+                  main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
                 true ->
                   DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
                   DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
@@ -141,38 +127,24 @@ check_collision(CarPid, CarPidsKeys, UpdatedCars, X, Y, Position, 2, Cars, GuiPi
     true ->
       LastPid = lists:last(CarPidsKeys),
       FoundCar = orddict:find(LastPid, UpdatedCars),
-      {ok, {PositionC, _, A, B}} = FoundCar,
+      {ok, {PositionC, _, A, _}} = FoundCar,
       if
         PositionC =:= Position ->
           if
             X-1 < A ->
               if
                 A < X+11 ->
-                  if
-                    Y-11 < B ->
-                      if
-                        B < Y+11 ->
-                          CarPid ! {self(), stop},
-                          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
-                        true ->
-                          DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                          DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                          check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 2, Position, Cars, GuiPid, IsGreenOnMain)
-                      end;
-                    true ->
-                      DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                      DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                      check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 2, Position, Cars, GuiPid, IsGreenOnMain)
-                  end;
+                  CarPid ! {self(), stop},
+                  main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
                 true ->
                   DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
                   DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 2, Cars, GuiPid, IsGreenOnMain)
+                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 2, Position, Cars, GuiPid, IsGreenOnMain)
               end;
             true ->
               DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
               DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 2, Cars, GuiPid, IsGreenOnMain)
+              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 2, Position, Cars, GuiPid, IsGreenOnMain)
           end;
         true ->
           DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
@@ -188,33 +160,19 @@ check_collision(CarPid, CarPidsKeys, UpdatedCars, X, Y, Position, 3, Cars, GuiPi
     true ->
       LastPid = lists:last(CarPidsKeys),
       FoundCar = orddict:find(LastPid, UpdatedCars),
-      {ok, {PositionC, _, A, B}} = FoundCar,
+      {ok, {PositionC, _, _, B}} = FoundCar,
       if
         PositionC =:= Position ->
           if
-            X-11 < A ->
+            Y-1 < B ->
               if
-                A < X+11 ->
-                if
-                  Y-1 < B ->
-                    if
-                      B < Y+11 ->
-                        CarPid ! {self(), stop},
-                        main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
-                      true ->
-                        DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                        DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                        check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 3, Cars, GuiPid, IsGreenOnMain)
-                    end;
-                  true ->
-                    DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                    DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                    check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 3, Cars, GuiPid, IsGreenOnMain)
-                end;
+                B < Y+11 ->
+                  CarPid ! {self(), stop},
+                  main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
                 true ->
-                DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 3, Cars, GuiPid, IsGreenOnMain)
+                  DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
+                  DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
+                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 3, Cars, GuiPid, IsGreenOnMain)
               end;
             true ->
               DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
@@ -235,38 +193,24 @@ check_collision(CarPid, CarPidsKeys, UpdatedCars, X, Y, Position, 4, Cars, GuiPi
     true ->
       LastPid = lists:last(CarPidsKeys),
       FoundCar = orddict:find(LastPid, UpdatedCars),
-      {ok, {PositionC, _, A, B}} = FoundCar,
+      {ok, {PositionC, _, A, _}} = FoundCar,
       if
         PositionC =:= Position ->
           if
             X-11 < A ->
               if
                 A < X+1 ->
-                  if
-                    Y-11 < B ->
-                      if
-                        B < Y+11 ->
-                          CarPid ! {self(), stop},
-                          main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
-                        true ->
-                          DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                          DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                          check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 4, Position, Cars, GuiPid, IsGreenOnMain)
-                      end;
-                    true ->
-                      DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
-                      DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                      check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 4, Position, Cars, GuiPid, IsGreenOnMain)
-                  end;
+                  CarPid ! {self(), stop},
+                  main_crossroad_loop({Cars}, GuiPid, IsGreenOnMain);
                 true ->
                   DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
                   DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 4, Cars, GuiPid, IsGreenOnMain)
+                  check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 4, Position, Cars, GuiPid, IsGreenOnMain)
               end;
             true ->
               DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
               DeletedLastPidKey = lists:delete(LastPid, CarPidsKeys),
-              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 4, Cars, GuiPid, IsGreenOnMain)
+              check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, 4, Position, Cars, GuiPid, IsGreenOnMain)
           end;
         true ->
           DeletedLastCar = orddict:erase(LastPid, UpdatedCars),
@@ -274,4 +218,3 @@ check_collision(CarPid, CarPidsKeys, UpdatedCars, X, Y, Position, 4, Cars, GuiPi
           check_collision(CarPid, DeletedLastPidKey, DeletedLastCar, X, Y, Position, 4, Cars, GuiPid, IsGreenOnMain)
       end
   end.
-
