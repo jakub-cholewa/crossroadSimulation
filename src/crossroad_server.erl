@@ -19,22 +19,22 @@ printxy({X,Y,Msg}) ->
 
 %% MAIN view
 init() ->
-  print({clear}),
-  print({printxy, 10, 3, '---------------------'}),
-  print({printxy, 10, 4, '|CrossroadSimulation|'}),
-  print({printxy, 10, 5, '---------------------'}),
-  print({printxy, 6, 8, "crossroad_server:auto(): TRYB AUTOMATYCZNY"}),
-  print({printxy, 6, 10, "crossroad_server:user(): TRYB UZYTKOWNIKA"}),
-  print({gotoxy, 10, 13}),
-  io:format("\n",[]),
+%%  print({clear}),
+%%  print({printxy, 10, 3, '---------------------'}),
+%%  print({printxy, 10, 4, '|CrossroadSimulation|'}),
+%%  print({printxy, 10, 5, '---------------------'}),
+%%  print({printxy, 6, 8, "crossroad_server:auto(): TRYB AUTOMATYCZNY"}),
+%%  print({printxy, 6, 10, "crossroad_server:user(): TRYB UZYTKOWNIKA"}),
+%%  print({gotoxy, 10, 13}),
+%%  io:format("\n",[]),
   Server = wx:new(),
   Wx = make_window1(Server),
   main_window_loop(Wx).
 
 make_window1(Server) ->
-  Frame = wxFrame:new(Server, -1, "CrossroadSimulation", [{size,{1280,720}}]),
-  Auto_Button = wxButton:new(Frame, 1, [{label, "Auto simulation"}, {pos, {300,70}}]),
-  Manual_Button = wxButton:new(Frame, 2, [{label, "Manual simulation"}, {pos, {700,70}}]),
+  Frame = wxFrame:new(Server, -1, "CrossroadSimulation", [{size,{800,600}}]),
+  Auto_Button = wxButton:new(Frame, 1, [{label, "Start simulation"}, {pos, {300,70}}]),
+  Manual_Button = wxButton:new(Frame, 2, [{label, "Manual simulation"}, {pos, {900,70}}]),
 
   wxFrame:createStatusBar(Frame),
   wxFrame:show(Frame),
@@ -57,7 +57,7 @@ main_window_loop(Wx) ->
 %%      wxWindow:destroy(Manual_Button),
 %%      init2(Server,Frame);
 %%
-    #wx{id = 2, event=#wxCommand{type = command_button_clicked}} ->
+    #wx{id = 1, event=#wxCommand{type = command_button_clicked}} ->
       wxWindow:destroy(Auto_Button),
       wxWindow:destroy(Manual_Button),
       user(Server, Frame)
@@ -90,11 +90,25 @@ checkCarInput() ->
 
 make_window_for_manual_case(Server , Frame) ->
 %%make_window_for_manual_case(Server , Frame, PlNo) ->
-  End_Button = wxButton:new(Frame, 3, [{label, "End simulation"}, {pos, {500,50}}]),
+%%  DrawContext = wxPaintDC:new(Frame),
+%%  wxDC:setTextBackground(DrawContext, {200,0,0}),
+%%  wxDC:setTextForeground(DrawContext, {200,0,0}),
+%%  wxStaticText:new(Frame, 0, "Symulacja Skrzyżowania", [{pos, {800, 50}}]),
+%%  wxDC:drawLabel(DrawContext, "O", {375,375,100,100}),
+  End_Button = wxButton:new(Frame, 3, [{label, "Koniec"}, {pos, {550,550}}]),
+  N_Button = wxButton:new(Frame, 4, [{label, "N"}, {pos, {600,100}}, {size, {50,50}}]),
+  E_Button = wxButton:new(Frame, 5, [{label, "E"}, {pos, {650,150}}, {size, {50,50}}]),
+  S_Button = wxButton:new(Frame, 6, [{label, "S"}, {pos, {600,200}}, {size, {50,50}}]),
+  W_Button = wxButton:new(Frame, 7, [{label, "W"}, {pos, {550,150}}, {size, {50,50}}]),
   wxButton:connect(End_Button, command_button_clicked),
+  wxButton:connect(N_Button, command_button_clicked),
+  wxButton:connect(E_Button, command_button_clicked),
+  wxButton:connect(S_Button, command_button_clicked),
+  wxButton:connect(W_Button, command_button_clicked),
 
-  MainLight = wxStaticText:new(Frame, 0, "Główne światło:", [{pos, {550, 100}}]),
-  SubLight = wxStaticText:new(Frame, 0, "Poboczne światło: ", [{pos, {550, 150}}]),
+  wxStaticText:new(Frame, 0, "Symulacja Skrzyżowania", [{pos, {600, 30}}]),
+  MainLight = wxStaticText:new(Frame, 0, "Główne światło:", [{pos, {550, 400}}]),
+  SubLight = wxStaticText:new(Frame, 0, "Poboczne światło: ", [{pos, {550, 450}}]),
 
 
 
@@ -116,6 +130,28 @@ loop_for_manual_case(Wx, CrossroadPid, UserPid) ->
       CrossroadPid ! {die},
       wxWindow:destroy(Frame),
       ok;
+
+    #wx{id = 3, event=#wxCommand{type = command_button_clicked}} ->
+      UserPid ! {die},
+      CrossroadPid ! {die},
+      io:format("ZAMKNIETE"),
+      wxWindow:destroy(Frame);
+
+    #wx{id = 4, event=#wxCommand{type = command_button_clicked}} ->
+      crossroad:add_car(1, 3, 265, 100),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid);
+
+    #wx{id = 5, event=#wxCommand{type = command_button_clicked}} ->
+      crossroad:add_car(2, 4, 490, 265),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid);
+
+    #wx{id = 6, event=#wxCommand{type = command_button_clicked}} ->
+      crossroad:add_car(3, 1, 325, 490),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid);
+
+    #wx{id = 7, event=#wxCommand{type = command_button_clicked}} ->
+      crossroad:add_car(4, 2, 100, 320),
+      loop_for_manual_case(Wx, CrossroadPid, UserPid);
 
     {Cars, newCarAdded} ->
       io:format("Odebrałem nowy samochód~n"),
@@ -155,27 +191,30 @@ draw_cars([], Frame) ->
 
 draw_lights(IsGreenOnMain, Frame, MainLight, SubLight) ->
   io:format("Zmieniam światlo~n"),
+  DrawContext = wxPaintDC:new(Frame),
   if
     IsGreenOnMain =:= 1 ->
+      wxDC:setTextForeground(DrawContext, {255,0,0}),
+      wxDC:drawLabel(DrawContext, "O", {50,290,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {540,290,100,100}),
+      wxDC:setTextForeground(DrawContext, {0,180,0}),
+      wxDC:drawLabel(DrawContext, "O", {290,50,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {290,530,100,100}),
+
+
       wxStaticText:setLabel(MainLight,"Główne światło   : ZIELONE"),
       wxStaticText:setLabel(SubLight, "Poboczne światło : CZERWONE");
     true ->
+      wxDC:setTextForeground(DrawContext, {0,180,0}),
+      wxDC:drawLabel(DrawContext, "O", {50,290,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {540,290,100,100}),
+      wxDC:setTextForeground(DrawContext, {255,0,0}),
+      wxDC:drawLabel(DrawContext, "O", {290,50,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {290,530,100,100}),
+
       wxStaticText:setLabel(MainLight,"Główne światło   : CZERWONE"),
       wxStaticText:setLabel(SubLight, "Poboczne światło : ZIELONE")
   end.
 
-%%  if
-%%    IsGreenOnMain =:= 1 ->
-%%      ;
-%%    true ->
-%%  end
-
-
-%%  DrawContext = wxPaintDC:new(Frame),
-%%  wxDC:drawRectangle(DrawContext, {X, Y}, {10, 10}),
-%%  draw_cars(Tail, Frame);
-%%
-%%draw_cars([] , Frame) ->
-%%  ok.
 
 
