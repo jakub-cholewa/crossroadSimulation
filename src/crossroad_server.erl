@@ -145,7 +145,7 @@ draw_crossroad(Frame) ->
 
 
 draw_cars([{Pid, {Spawn, Direction, X, Y}} | Rest], Frame) ->
-  io:format("Wyświetlam : X= ~p Y= ~p ~n", [X, Y]),
+%%  io:format("Wyświetlam : X= ~p Y= ~p ~n", [X, Y]),
   DrawContext = wxPaintDC:new(Frame),
   wxDC:drawRectangle(DrawContext, {X, Y}, {10,10}),
   draw_cars(Rest, Frame);

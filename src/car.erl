@@ -19,21 +19,13 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
 
 %%  io:format("coord of car: X = ~p, Y = ~p~n", [X, Y]),
 
-
-
   CrossPid ! {self(), X, Y, moved},
 
   check_for_border(X, Y, Direction, CrossPid),
 
   check_lights(Position, Direction, X, Y, GuiPid, CrossPid),
 
-
-
   if
-%%    Direction =:= 1 -> car_lifecycle_loop(Position, Direction, X, Y-5, GuiPid, CrossPid);
-%%    Direction =:= 2 -> car_lifecycle_loop(Position, Direction, X+5, Y, GuiPid, CrossPid);
-%%    Direction =:= 3 -> car_lifecycle_loop(Position, Direction, X, Y+5, GuiPid, CrossPid);
-%%    Direction =:= 4 -> car_lifecycle_loop(Position, Direction, X-5, Y, GuiPid, CrossPid)
     Direction =:= 1 -> move_car_n(Position, Direction, X, Y, GuiPid, CrossPid);
     Direction =:= 2 -> move_car_e(Position, Direction, X, Y, GuiPid, CrossPid);
     Direction =:= 3 -> move_car_s(Position, Direction, X, Y, GuiPid, CrossPid);
@@ -41,39 +33,6 @@ car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid) ->
   end.
 
 
-%%move_car_n(Position, Direction, X, Y, GuiPid, CrossPid) ->
-%%  CrossPid ! {self(), X, Y-1, getinfo},
-%%  receive
-%%    {CrossPid, Cars} ->
-%%      Last = lists:last(Cars)
-%%  end.
-%%
-%%move_car_e(Position, Direction, X, Y, GuiPid, CrossPid) ->
-%%  CrossPid ! {self(), X+1, Y, getinfo},
-%%  receive
-%%    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X+1, Y, GuiPid, CrossPid);
-%%    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
-%%  end.
-%%
-%%move_car_s(Position, Direction, X, Y, GuiPid, CrossPid) ->
-%%  CrossPid ! {self(), X, Y+1, getinfo},
-%%  receive
-%%    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X, Y+1, GuiPid, CrossPid);
-%%    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
-%%  end.
-%%
-%%move_car_w(Position, Direction, X, Y, GuiPid, CrossPid) ->
-%%  CrossPid ! {self(), X-1, Y, getinfo},
-%%  receive
-%%    {CrossPid, ok} -> car_lifecycle_loop(Position, Direction, X-1, Y, GuiPid, CrossPid);
-%%    {CrossPid, stop} -> car_lifecycle_loop(Position, Direction, X, Y, GuiPid, CrossPid)
-%%  end.
-%%
-%%firstmatch(YourList, Number) ->
-%%  case lists:dropwhile(fun(X) -> X =< Number end, YourList) of
-%%    [] -> no_solution;
-%%    [X | _] -> X
-%%  end.
 
 move_car_n(Position, Direction, X, Y, GuiPid, CrossPid) ->
   CrossPid ! {self(), X, Y-1, getinfo},
