@@ -90,6 +90,11 @@ checkCarInput() ->
 
 make_window_for_manual_case(Server , Frame) ->
 %%make_window_for_manual_case(Server , Frame, PlNo) ->
+%%  DrawContext = wxPaintDC:new(Frame),
+%%  wxDC:setTextBackground(DrawContext, {200,0,0}),
+%%  wxDC:setTextForeground(DrawContext, {200,0,0}),
+%%  wxStaticText:new(Frame, 0, "Symulacja Skrzyżowania", [{pos, {800, 50}}]),
+%%  wxDC:drawLabel(DrawContext, "O", {375,375,100,100}),
   End_Button = wxButton:new(Frame, 3, [{label, "End simulation"}, {pos, {500,50}}]),
   wxButton:connect(End_Button, command_button_clicked),
 
@@ -155,27 +160,30 @@ draw_cars([], Frame) ->
 
 draw_lights(IsGreenOnMain, Frame, MainLight, SubLight) ->
   io:format("Zmieniam światlo~n"),
+  DrawContext = wxPaintDC:new(Frame),
   if
     IsGreenOnMain =:= 1 ->
+      wxDC:setTextForeground(DrawContext, {255,0,0}),
+      wxDC:drawLabel(DrawContext, "O", {50,290,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {540,290,100,100}),
+      wxDC:setTextForeground(DrawContext, {0,180,0}),
+      wxDC:drawLabel(DrawContext, "O", {290,50,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {290,530,100,100}),
+
+
       wxStaticText:setLabel(MainLight,"Główne światło   : ZIELONE"),
       wxStaticText:setLabel(SubLight, "Poboczne światło : CZERWONE");
     true ->
+      wxDC:setTextForeground(DrawContext, {0,180,0}),
+      wxDC:drawLabel(DrawContext, "O", {50,290,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {540,290,100,100}),
+      wxDC:setTextForeground(DrawContext, {255,0,0}),
+      wxDC:drawLabel(DrawContext, "O", {290,50,100,100}),
+      wxDC:drawLabel(DrawContext, "O", {290,530,100,100}),
+
       wxStaticText:setLabel(MainLight,"Główne światło   : CZERWONE"),
       wxStaticText:setLabel(SubLight, "Poboczne światło : ZIELONE")
   end.
 
-%%  if
-%%    IsGreenOnMain =:= 1 ->
-%%      ;
-%%    true ->
-%%  end
-
-
-%%  DrawContext = wxPaintDC:new(Frame),
-%%  wxDC:drawRectangle(DrawContext, {X, Y}, {10, 10}),
-%%  draw_cars(Tail, Frame);
-%%
-%%draw_cars([] , Frame) ->
-%%  ok.
 
 
